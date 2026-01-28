@@ -39,7 +39,7 @@ struct SettingsView: View {
                     settings.notifyEnabled = newValue
                     if newValue {
                         Task {
-                            await NotificationService.shared.requestPermission()
+                            _ = await NotificationService.shared.requestPermission()
                             await NotificationService.shared.scheduleRandomNotifications(settings: settings)
                         }
                     } else {

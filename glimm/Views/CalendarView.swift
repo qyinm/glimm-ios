@@ -129,8 +129,7 @@ struct CalendarView: View {
     }
 
     private var daysInMonth: [Date?] {
-        guard let monthInterval = calendar.dateInterval(of: .month, for: selectedDate),
-              let monthFirstWeek = calendar.dateInterval(of: .weekOfMonth, for: monthInterval.start) else {
+        guard let monthInterval = calendar.dateInterval(of: .month, for: selectedDate) else {
             return []
         }
 
@@ -190,7 +189,7 @@ struct DayMemoriesSheet: View {
                 }
                 .padding(16)
             }
-            .navigationTitle(date, format: .dateTime.month().day())
+            .navigationTitle(date.formatted(.dateTime.month().day()))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {

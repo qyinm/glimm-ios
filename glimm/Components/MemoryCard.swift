@@ -28,11 +28,7 @@ struct MemoryCard: View {
                             .lineLimit(3)
                     }
 
-                    Text(memory.capturedAt, style: .date)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    + Text(" ")
-                    + Text(memory.capturedAt, style: .time)
+                    Text("\(memory.capturedAt.formatted(date: .abbreviated, time: .shortened))")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }

@@ -4,6 +4,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct MemoryDetailView: View {
     @Environment(\.modelContext) private var modelContext

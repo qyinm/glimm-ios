@@ -4,7 +4,9 @@
 //
 
 import SwiftUI
+import SwiftData
 import AVFoundation
+import Combine
 
 struct CaptureView: View {
     @Environment(\.modelContext) private var modelContext
@@ -300,10 +302,10 @@ struct CameraPreview: UIViewRepresentable {
     @ObservedObject var camera: CameraModel
 
     func makeUIView(context: Context) -> UIView {
-        let view = UIView(frame: UIScreen.main.bounds)
+        let view = UIView()
+        view.backgroundColor = .black
 
         let previewLayer = AVCaptureVideoPreviewLayer(session: camera.session)
-        previewLayer.frame = view.frame
         previewLayer.videoGravity = .resizeAspectFill
         view.layer.addSublayer(previewLayer)
 
@@ -312,7 +314,9 @@ struct CameraPreview: UIViewRepresentable {
         return view
     }
 
-    func updateUIView(_ uiView: UIView, context: Context) {}
+    func updateUIView(_ uiView: UIView, context: Context) {
+        camera.preview?.frame = uiView.bounds
+    }
 }
 
 #Preview {
