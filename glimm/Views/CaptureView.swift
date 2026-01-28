@@ -11,27 +11,14 @@ struct CaptureView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @State private var capturedImage: UIImage?
-    @State private var showCamera = true
     @State private var showNoteInput = false
     @State private var note = ""
 
     var body: some View {
-        ZStack {
-            Color.black.ignoresSafeArea()
-
-            if let image = capturedImage {
-                previewView(image: image)
-            }
-        }
-        .fullScreenCover(isPresented: $showCamera) {
-            ImagePicker(image: $capturedImage, sourceType: .camera)
-                .ignoresSafeArea()
-                .onDisappear {
-                    if capturedImage == nil {
-                        dismiss()
-                    }
-                }
-        }
+        ImagePicker(image: $capturedImage, sourceType: .camera, onCancel: {
+            dismiss()
+        })
+        .ignoresSafeArea()
         .sheet(isPresented: $showNoteInput) {
             noteInputSheet
         }
@@ -40,13 +27,6 @@ struct CaptureView: View {
                 showNoteInput = true
             }
         }
-    }
-
-    private func previewView(image: UIImage) -> some View {
-        Image(uiImage: image)
-            .resizable()
-            .aspectRatio(contentMode: .fit)
-            .ignoresSafeArea()
     }
 
     private var noteInputSheet: some View {
@@ -82,10 +62,9 @@ struct CaptureView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Retake") {
+                    Button("Cancel") {
                         showNoteInput = false
-                        capturedImage = nil
-                        showCamera = true
+                        dismiss()
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
@@ -123,6 +102,7 @@ struct CaptureView: View {
 struct ImagePicker: UIViewControllerRepresentable {
     @Binding var image: UIImage?
     let sourceType: UIImagePickerController.SourceType
+    var onCancel: (() -> Void)?
 
     func makeUIViewController(context: Context) -> UIImagePickerController {
         let picker = UIImagePickerController()
@@ -149,11 +129,10 @@ struct ImagePicker: UIViewControllerRepresentable {
             if let image = info[.originalImage] as? UIImage {
                 parent.image = image
             }
-            picker.dismiss(animated: true)
         }
 
         func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-            picker.dismiss(animated: true)
+            parent.onCancel?()
         }
     }
 }
