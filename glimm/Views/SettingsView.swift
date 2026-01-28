@@ -173,7 +173,7 @@ struct SettingsView: View {
                     divider
 
                     settingRow {
-                        Link(destination: URL(string: "https://glimm.app/privacy")!) {
+                        Link(destination: URL(string: "https://glimm-landing-page.vercel.app/privacy")!) {
                             HStack {
                                 Text("Privacy Policy")
                                     .foregroundStyle(.primary)
@@ -188,7 +188,7 @@ struct SettingsView: View {
                     divider
 
                     settingRow {
-                        Link(destination: URL(string: "https://glimm.app/terms")!) {
+                        Link(destination: URL(string: "https://glimm-landing-page.vercel.app/terms")!) {
                             HStack {
                                 Text("Terms of Service")
                                     .foregroundStyle(.primary)
