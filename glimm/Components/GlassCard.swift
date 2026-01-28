@@ -6,6 +6,7 @@
 import SwiftUI
 
 struct GlassCard<Content: View>: View {
+    @Environment(\.colorScheme) private var colorScheme
     let content: Content
     var padding: CGFloat = 20
 
@@ -17,9 +18,42 @@ struct GlassCard<Content: View>: View {
     var body: some View {
         content
             .padding(padding)
-            .background(.ultraThinMaterial)
-            .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-            .shadow(color: .black.opacity(0.04), radius: 16, x: 0, y: 8)
+            .background {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                        .fill(.ultraThinMaterial)
+
+                    // Top highlight
+                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                        .stroke(
+                            LinearGradient(
+                                colors: colorScheme == .dark
+                                    ? [.white.opacity(0.12), .white.opacity(0.04), .clear]
+                                    : [.white.opacity(0.5), .white.opacity(0.1), .clear],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            ),
+                            lineWidth: 1
+                        )
+
+                    // Border
+                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                        .stroke(
+                            colorScheme == .dark
+                                ? Color.white.opacity(0.08)
+                                : Color.black.opacity(0.04),
+                            lineWidth: 0.5
+                        )
+                }
+            }
+            .shadow(
+                color: colorScheme == .dark
+                    ? .black.opacity(0.2)
+                    : .black.opacity(0.04),
+                radius: 16,
+                x: 0,
+                y: 8
+            )
     }
 }
 
@@ -43,4 +77,22 @@ struct GlassCard<Content: View>: View {
         }
         .padding()
     }
+}
+
+#Preview("Dark Mode") {
+    ZStack {
+        Color.black.ignoresSafeArea()
+
+        GlassCard {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Sample Card")
+                    .font(.headline)
+                Text("This is a glass card component")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding()
+    }
+    .preferredColorScheme(.dark)
 }

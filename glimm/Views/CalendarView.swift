@@ -7,6 +7,7 @@ import SwiftUI
 import SwiftData
 
 struct CalendarView: View {
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Memory.capturedAt, order: .reverse) private var memories: [Memory]
     @State private var selectedDate = Date()
@@ -24,9 +25,13 @@ struct CalendarView: View {
                 weekdayHeader
 
                 calendarGrid
+
+                Spacer()
             }
+            .padding(.bottom, 100) // Space for tab bar
             .navigationTitle("Calendar")
             .navigationBarTitleDisplayMode(.large)
+            .background(Color(.systemBackground))
             .sheet(item: Binding(
                 get: { selectedDayMemories.map { DayMemoriesWrapper(memories: $0, date: selectedDate) } },
                 set: { selectedDayMemories = $0?.memories }
@@ -107,18 +112,18 @@ struct CalendarView: View {
             ZStack {
                 if isToday {
                     Circle()
-                        .fill(.black)
+                        .fill(colorScheme == .dark ? .white : .black)
                         .frame(width: 36, height: 36)
                 }
 
                 Text("\(calendar.component(.day, from: date))")
                     .font(.body)
                     .fontWeight(isToday ? .semibold : .regular)
-                    .foregroundStyle(isToday ? .white : .primary)
+                    .foregroundStyle(isToday ? (colorScheme == .dark ? .black : .white) : .primary)
 
                 if hasMemories && !isToday {
                     Circle()
-                        .fill(.black)
+                        .fill(colorScheme == .dark ? .white : .black)
                         .frame(width: 6, height: 6)
                         .offset(y: 16)
                 }
@@ -138,12 +143,10 @@ struct CalendarView: View {
 
         var days: [Date?] = []
 
-        // Add empty cells for days before the first day of month
         for _ in 1..<firstDayWeekday {
             days.append(nil)
         }
 
-        // Add all days of the month
         var currentDate = firstDayOfMonth
         while currentDate < monthInterval.end {
             days.append(currentDate)
@@ -189,6 +192,7 @@ struct DayMemoriesSheet: View {
                 }
                 .padding(16)
             }
+            .background(Color(.systemBackground))
             .navigationTitle(date.formatted(.dateTime.month().day()))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

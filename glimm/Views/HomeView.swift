@@ -22,6 +22,7 @@ struct HomeView: View {
             }
             .navigationTitle("glimm")
             .navigationBarTitleDisplayMode(.large)
+            .background(Color(.systemBackground))
             .sheet(item: $selectedMemory) { memory in
                 MemoryDetailView(memory: memory)
             }
@@ -38,12 +39,13 @@ struct HomeView: View {
                 .font(.title2)
                 .fontWeight(.semibold)
 
-            Text("Tap the camera tab to capture\nyour first moment")
+            Text("Tap the + button to capture\nyour first moment")
                 .font(.body)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
         }
         .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     private var memoryListView: some View {
@@ -64,8 +66,8 @@ struct HomeView: View {
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 8)
+            .padding(.bottom, 100) // Space for tab bar
         }
-        .background(Color(.systemBackground))
     }
 
     private func dateHeader(for date: Date) -> some View {

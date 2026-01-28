@@ -11,41 +11,132 @@ struct MainTabView: View {
     @State private var showCapture = false
 
     var body: some View {
-        TabView(selection: $selectedTab) {
-            HomeView()
-                .tabItem {
-                    Label("Timeline", systemImage: "square.stack")
-                }
-                .tag(0)
+        ZStack(alignment: .bottom) {
+            // Background
+            Color(.systemBackground)
+                .ignoresSafeArea()
 
-            CalendarView()
-                .tabItem {
-                    Label("Calendar", systemImage: "calendar")
+            // Content
+            Group {
+                switch selectedTab {
+                case 0:
+                    HomeView()
+                case 1:
+                    CalendarView()
+                case 2:
+                    SettingsView()
+                default:
+                    HomeView()
                 }
-                .tag(1)
-
-            Color.clear
-                .tabItem {
-                    Label("Capture", systemImage: "camera.fill")
-                }
-                .tag(2)
-
-            SettingsView()
-                .tabItem {
-                    Label("Settings", systemImage: "gearshape")
-                }
-                .tag(3)
-        }
-        .onChange(of: selectedTab) { oldValue, newValue in
-            if newValue == 2 {
-                showCapture = true
-                selectedTab = oldValue
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+            // Custom Tab Bar
+            customTabBar
         }
         .fullScreenCover(isPresented: $showCapture) {
             CaptureView()
         }
-        .tint(.black)
+    }
+
+    private var customTabBar: some View {
+        HStack {
+            // Regular tabs in glass container
+            HStack(spacing: 0) {
+                tabButton(icon: "square.stack", title: "Timeline", tag: 0)
+                tabButton(icon: "calendar", title: "Calendar", tag: 1)
+                tabButton(icon: "gearshape", title: "Settings", tag: 2)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 10)
+            .background {
+                liquidGlassBackground
+            }
+            .shadow(color: .black.opacity(0.08), radius: 20, x: 0, y: 8)
+
+            Spacer()
+
+            // Standalone Capture button - separate from tab container
+            Button {
+                showCapture = true
+            } label: {
+                ZStack {
+                    // Liquid glass background (same as tab bar)
+                    Circle()
+                        .fill(.ultraThinMaterial)
+                    
+                    // Inner highlight
+                    Circle()
+                        .stroke(
+                            LinearGradient(
+                                colors: [.white.opacity(0.5), .white.opacity(0.1), .clear],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            ),
+                            lineWidth: 1
+                        )
+                    
+                    // Subtle border
+                    Circle()
+                        .stroke(Color.primary.opacity(0.05), lineWidth: 0.5)
+
+                    Image(systemName: "plus")
+                        .font(.system(size: 24, weight: .semibold))
+                        .foregroundStyle(.primary)
+                }
+                .frame(width: 68, height: 68)
+                .shadow(color: .black.opacity(0.08), radius: 20, x: 0, y: 8)
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(.horizontal, 20)
+        .padding(.bottom, 8)
+    }
+
+    private var liquidGlassBackground: some View {
+        ZStack {
+            // Base blur - fully round
+            Capsule()
+                .fill(.ultraThinMaterial)
+
+            // Inner highlight (top edge)
+            Capsule()
+                .stroke(
+                    LinearGradient(
+                        colors: [.white.opacity(0.5), .white.opacity(0.1), .clear],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    ),
+                    lineWidth: 1
+                )
+
+            // Subtle border
+            Capsule()
+                .stroke(Color.black.opacity(0.05), lineWidth: 0.5)
+        }
+    }
+
+    private func tabButton(icon: String, title: String, tag: Int) -> some View {
+        Button {
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                selectedTab = tag
+            }
+        } label: {
+            VStack(spacing: 4) {
+                Image(systemName: icon)
+                    .font(.system(size: 20))
+                    .symbolRenderingMode(.hierarchical)
+                    .symbolVariant(selectedTab == tag ? .fill : .none)
+                    .frame(width: 24, height: 24)
+                Text(title)
+                    .font(.caption2)
+                    .fontWeight(selectedTab == tag ? .medium : .regular)
+            }
+            .foregroundStyle(selectedTab == tag ? .primary : .secondary)
+            .frame(width: 72, height: 48)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
     }
 }
 

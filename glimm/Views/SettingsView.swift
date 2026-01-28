@@ -7,6 +7,7 @@ import SwiftUI
 import SwiftData
 
 struct SettingsView: View {
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.modelContext) private var modelContext
     @Query private var settingsArray: [Settings]
 
@@ -21,103 +22,207 @@ struct SettingsView: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                notificationSection
+            ScrollView {
+                VStack(spacing: 24) {
+                    notificationSection
 
-                aboutSection
+                    aboutSection
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
+                .padding(.bottom, 100) // Space for tab bar
             }
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.large)
+            .background(Color(.systemBackground))
         }
     }
 
     private var notificationSection: some View {
-        Section {
-            Toggle("Enable Notifications", isOn: Binding(
-                get: { settings.notifyEnabled },
-                set: { newValue in
-                    settings.notifyEnabled = newValue
-                    if newValue {
-                        Task {
-                            _ = await NotificationService.shared.requestPermission()
-                            await NotificationService.shared.scheduleRandomNotifications(settings: settings)
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Notifications")
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .foregroundStyle(.secondary)
+                .padding(.leading, 4)
+
+            GlassCard(padding: 0) {
+                VStack(spacing: 0) {
+                    // Enable toggle
+                    settingRow {
+                        Toggle("Enable Notifications", isOn: Binding(
+                            get: { settings.notifyEnabled },
+                            set: { newValue in
+                                settings.notifyEnabled = newValue
+                                if newValue {
+                                    Task {
+                                        _ = await NotificationService.shared.requestPermission()
+                                        await NotificationService.shared.scheduleRandomNotifications(settings: settings)
+                                    }
+                                } else {
+                                    NotificationService.shared.cancelAllNotifications()
+                                }
+                            }
+                        ))
+                        .tint(.green)
+                    }
+
+                    if settings.notifyEnabled {
+                        divider
+
+                        // Start time
+                        settingRow {
+                            HStack {
+                                Text("Start Time")
+                                Spacer()
+                                DatePicker(
+                                    "",
+                                    selection: Binding(
+                                        get: { settings.notifyStart },
+                                        set: { settings.notifyStart = $0 }
+                                    ),
+                                    displayedComponents: .hourAndMinute
+                                )
+                                .labelsHidden()
+                            }
                         }
-                    } else {
-                        NotificationService.shared.cancelAllNotifications()
+
+                        divider
+
+                        // End time
+                        settingRow {
+                            HStack {
+                                Text("End Time")
+                                Spacer()
+                                DatePicker(
+                                    "",
+                                    selection: Binding(
+                                        get: { settings.notifyEnd },
+                                        set: { settings.notifyEnd = $0 }
+                                    ),
+                                    displayedComponents: .hourAndMinute
+                                )
+                                .labelsHidden()
+                            }
+                        }
+
+                        divider
+
+                        // Frequency
+                        settingRow {
+                            HStack {
+                                Text("Frequency: \(settings.notifyFrequency) per day")
+                                Spacer()
+                                HStack(spacing: 0) {
+                                    Button {
+                                        if settings.notifyFrequency > 1 {
+                                            settings.notifyFrequency -= 1
+                                        }
+                                    } label: {
+                                        Image(systemName: "minus")
+                                            .frame(width: 44, height: 36)
+                                    }
+
+                                    Divider()
+                                        .frame(height: 20)
+
+                                    Button {
+                                        if settings.notifyFrequency < 5 {
+                                            settings.notifyFrequency += 1
+                                        }
+                                    } label: {
+                                        Image(systemName: "plus")
+                                            .frame(width: 44, height: 36)
+                                    }
+                                }
+                                .foregroundStyle(.primary)
+                                .background(.ultraThinMaterial)
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                            }
+                        }
                     }
                 }
-            ))
-
-            if settings.notifyEnabled {
-                DatePicker(
-                    "Start Time",
-                    selection: Binding(
-                        get: { settings.notifyStart },
-                        set: { settings.notifyStart = $0 }
-                    ),
-                    displayedComponents: .hourAndMinute
-                )
-
-                DatePicker(
-                    "End Time",
-                    selection: Binding(
-                        get: { settings.notifyEnd },
-                        set: { settings.notifyEnd = $0 }
-                    ),
-                    displayedComponents: .hourAndMinute
-                )
-
-                Stepper(
-                    "Frequency: \(settings.notifyFrequency) per day",
-                    value: Binding(
-                        get: { settings.notifyFrequency },
-                        set: { settings.notifyFrequency = $0 }
-                    ),
-                    in: 1...5
-                )
             }
-        } header: {
-            Text("Notifications")
-        } footer: {
+
             Text("glimm will send random reminders during your active hours to capture moments.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, 4)
         }
     }
 
     private var aboutSection: some View {
-        Section("About") {
-            HStack {
-                Text("Version")
-                Spacer()
-                Text("1.0.0")
-                    .foregroundStyle(.secondary)
-            }
+        VStack(alignment: .leading, spacing: 12) {
+            Text("About")
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .foregroundStyle(.secondary)
+                .padding(.leading, 4)
 
-            Link(destination: URL(string: "https://glimm.app/privacy")!) {
-                HStack {
-                    Text("Privacy Policy")
-                    Spacer()
-                    Image(systemName: "arrow.up.right")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+            GlassCard(padding: 0) {
+                VStack(spacing: 0) {
+                    settingRow {
+                        HStack {
+                            Text("Version")
+                            Spacer()
+                            Text("1.0.0")
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+
+                    divider
+
+                    settingRow {
+                        Link(destination: URL(string: "https://glimm.app/privacy")!) {
+                            HStack {
+                                Text("Privacy Policy")
+                                    .foregroundStyle(.primary)
+                                Spacer()
+                                Image(systemName: "arrow.up.right")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+
+                    divider
+
+                    settingRow {
+                        Link(destination: URL(string: "https://glimm.app/terms")!) {
+                            HStack {
+                                Text("Terms of Service")
+                                    .foregroundStyle(.primary)
+                                Spacer()
+                                Image(systemName: "arrow.up.right")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
                 }
             }
-            .foregroundStyle(.primary)
-
-            Link(destination: URL(string: "https://glimm.app/terms")!) {
-                HStack {
-                    Text("Terms of Service")
-                    Spacer()
-                    Image(systemName: "arrow.up.right")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-            }
-            .foregroundStyle(.primary)
         }
+    }
+
+    private func settingRow<Content: View>(@ViewBuilder content: () -> Content) -> some View {
+        content()
+            .padding(.horizontal, 16)
+            .padding(.vertical, 14)
+    }
+
+    private var divider: some View {
+        Divider()
+            .padding(.leading, 16)
     }
 }
 
 #Preview {
     SettingsView()
         .modelContainer(for: Settings.self, inMemory: true)
+}
+
+#Preview("Dark Mode") {
+    SettingsView()
+        .modelContainer(for: Settings.self, inMemory: true)
+        .preferredColorScheme(.dark)
 }
