@@ -2,8 +2,6 @@
 //  glimmApp.swift
 //  glimm
 //
-//  Created by hippoo on 1/28/26.
-//
 
 import SwiftUI
 import SwiftData
@@ -12,9 +10,14 @@ import SwiftData
 struct glimmApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            Memory.self,
+            Settings.self,
         ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+        let modelConfiguration = ModelConfiguration(
+            schema: schema,
+            isStoredInMemoryOnly: false,
+            cloudKitDatabase: .automatic
+        )
 
         do {
             return try ModelContainer(for: schema, configurations: [modelConfiguration])
