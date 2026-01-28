@@ -150,6 +150,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = glimm/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "glimm needs camera access to capture your moments";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "glimm needs photo library access to save your memories";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -161,7 +163,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.glimm;
+				PRODUCT_BUNDLE_IDENTIFIER = app.glimm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -185,6 +187,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = glimm/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "glimm needs camera access to capture your moments";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "glimm needs photo library access to save your memories";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -196,7 +200,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.glimm;
+				PRODUCT_BUNDLE_IDENTIFIER = app.glimm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
