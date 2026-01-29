@@ -8,6 +8,8 @@ import SwiftData
 
 @main
 struct glimmApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Memory.self,

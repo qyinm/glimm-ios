@@ -60,6 +60,9 @@ struct MainTabView: View {
                 }
             }
         }
+        .onReceive(NotificationCenter.default.publisher(for: .openCamera)) { _ in
+            showCapture = true
+        }
     }
 
     private func initializeNotifications() async {
