@@ -18,6 +18,7 @@ struct GlassCard<Content: View>: View {
     var body: some View {
         content
             .padding(padding)
+            .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
             .background {
                 ZStack {
                     RoundedRectangle(cornerRadius: 24, style: .continuous)
@@ -46,6 +47,7 @@ struct GlassCard<Content: View>: View {
                         )
                 }
             }
+            .contentShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
             .shadow(
                 color: colorScheme == .dark
                     ? .black.opacity(0.2)

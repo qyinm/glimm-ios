@@ -13,10 +13,13 @@ struct MemoryCard: View {
             VStack(alignment: .leading, spacing: 0) {
                 if let imageData = memory.imageData,
                    let uiImage = UIImage(data: imageData) {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
+                    Color.clear
                         .frame(height: 200)
+                        .overlay {
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                        }
                         .clipped()
                 }
 
