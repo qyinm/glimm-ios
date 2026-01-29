@@ -7,8 +7,21 @@ import SwiftUI
 import SwiftData
 
 struct MainTabView: View {
+    @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.modelContext) private var modelContext
+    @Query private var allSettings: [Settings]
+
     @State private var selectedTab = 0
     @State private var showCapture = false
+
+    private var settings: Settings {
+        if let existing = allSettings.first {
+            return existing
+        }
+        let newSettings = Settings()
+        modelContext.insert(newSettings)
+        return newSettings
+    }
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -36,6 +49,25 @@ struct MainTabView: View {
         }
         .fullScreenCover(isPresented: $showCapture) {
             CaptureView()
+        }
+        .task {
+            await initializeNotifications()
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            if newPhase == .active {
+                Task {
+                    await initializeNotifications()
+                }
+            }
+        }
+    }
+
+    private func initializeNotifications() async {
+        guard settings.notifyEnabled else { return }
+
+        let granted = await NotificationService.shared.requestPermission()
+        if granted {
+            await NotificationService.shared.scheduleRandomNotifications(settings: settings)
         }
     }
 

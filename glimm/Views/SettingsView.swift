@@ -79,7 +79,10 @@ struct SettingsView: View {
                                     "",
                                     selection: Binding(
                                         get: { settings.notifyStart },
-                                        set: { settings.notifyStart = $0 }
+                                        set: {
+                                            settings.notifyStart = $0
+                                            rescheduleNotifications()
+                                        }
                                     ),
                                     displayedComponents: .hourAndMinute
                                 )
@@ -98,7 +101,10 @@ struct SettingsView: View {
                                     "",
                                     selection: Binding(
                                         get: { settings.notifyEnd },
-                                        set: { settings.notifyEnd = $0 }
+                                        set: {
+                                            settings.notifyEnd = $0
+                                            rescheduleNotifications()
+                                        }
                                     ),
                                     displayedComponents: .hourAndMinute
                                 )
@@ -117,6 +123,7 @@ struct SettingsView: View {
                                     Button {
                                         if settings.notifyFrequency > 1 {
                                             settings.notifyFrequency -= 1
+                                            rescheduleNotifications()
                                         }
                                     } label: {
                                         Image(systemName: "minus")
@@ -129,6 +136,7 @@ struct SettingsView: View {
                                     Button {
                                         if settings.notifyFrequency < 5 {
                                             settings.notifyFrequency += 1
+                                            rescheduleNotifications()
                                         }
                                     } label: {
                                         Image(systemName: "plus")
@@ -213,6 +221,12 @@ struct SettingsView: View {
     private var divider: some View {
         Divider()
             .padding(.leading, 16)
+    }
+
+    private func rescheduleNotifications() {
+        Task {
+            await NotificationService.shared.scheduleRandomNotifications(settings: settings)
+        }
     }
 }
 
