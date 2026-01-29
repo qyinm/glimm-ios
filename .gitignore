@@ -1,0 +1,32 @@
+# Xcode
+xcuserdata/
+*.xcuserstate
+*.xccheckout
+*.xcscmblueprint
+
+# Build
+build/
+DerivedData/
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# CocoaPods (if used later)
+Pods/
+
+# Carthage (if used later)
+Carthage/Build/
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# macOS
+.DS_Store
+*.swp
+*~
+
+# Secrets (if any)
+*.xcconfig
+!Debug.xcconfig
+!Release.xcconfig
