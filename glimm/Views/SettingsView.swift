@@ -134,7 +134,7 @@ struct SettingsView: View {
                                         .frame(height: 20)
 
                                     Button {
-                                        if settings.notifyFrequency < 5 {
+                                        if settings.notifyFrequency < 10 {
                                             settings.notifyFrequency += 1
                                             rescheduleNotifications()
                                         }
