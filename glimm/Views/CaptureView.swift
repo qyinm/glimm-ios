@@ -6,13 +6,19 @@
 import SwiftUI
 import SwiftData
 import PhotosUI
+import CoreLocation
 
 struct CaptureView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @StateObject private var locationService = LocationService()
     @State private var capturedImage: UIImage?
     @State private var showNoteInput = false
     @State private var note = ""
+    @State private var showLocationPicker = false
+    @State private var selectedLocationName: String?
+    @State private var selectedLatitude: Double?
+    @State private var selectedLongitude: Double?
 
     var body: some View {
         ImagePicker(image: $capturedImage, sourceType: .camera, onCancel: {
@@ -26,6 +32,9 @@ struct CaptureView: View {
             if newValue != nil {
                 showNoteInput = true
             }
+        }
+        .onAppear {
+            locationService.requestLocation()
         }
     }
 
@@ -56,6 +65,30 @@ struct CaptureView: View {
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, alignment: .trailing)
 
+                // Location picker button
+                Button {
+                    showLocationPicker = true
+                } label: {
+                    HStack {
+                        Image(systemName: "location.fill")
+                            .foregroundStyle(.blue)
+                        if let locationName = selectedLocationName {
+                            Text(locationName)
+                                .foregroundStyle(.primary)
+                        } else {
+                            Text("Add Location")
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(16)
+                    .background(.ultraThinMaterial)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                }
+
                 Spacer()
             }
             .padding(24)
@@ -74,9 +107,36 @@ struct CaptureView: View {
                     .fontWeight(.semibold)
                 }
             }
+            .sheet(isPresented: $showLocationPicker) {
+                LocationPickerView(
+                    selectedLocationName: $selectedLocationName,
+                    selectedLatitude: $selectedLatitude,
+                    selectedLongitude: $selectedLongitude
+                )
+            }
+            .task {
+                await autoDetectLocation()
+            }
         }
         .interactiveDismissDisabled()
         .presentationDetents([.large])
+    }
+
+    private func autoDetectLocation() async {
+        // Wait a bit for location to be available
+        try? await Task.sleep(for: .milliseconds(500))
+
+        guard let location = locationService.currentLocation else { return }
+
+        let lat = location.coordinate.latitude
+        let lon = location.coordinate.longitude
+
+        selectedLatitude = lat
+        selectedLongitude = lon
+
+        if let name = await locationService.reverseGeocode(latitude: lat, longitude: lon) {
+            selectedLocationName = name
+        }
     }
 
     private func saveMemory() {
@@ -86,9 +146,13 @@ struct CaptureView: View {
         }
 
         let trimmedNote = note.trimmingCharacters(in: .whitespacesAndNewlines)
+
         let memory = Memory(
             imageData: imageData,
-            note: trimmedNote.isEmpty ? nil : trimmedNote
+            note: trimmedNote.isEmpty ? nil : trimmedNote,
+            latitude: selectedLatitude,
+            longitude: selectedLongitude,
+            locationName: selectedLocationName
         )
         modelContext.insert(memory)
 

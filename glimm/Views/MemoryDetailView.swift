@@ -14,6 +14,11 @@ struct MemoryDetailView: View {
     @State private var showEditNote = false
     @State private var editedNote: String = ""
     @State private var showDeleteConfirmation = false
+    @State private var showShareSheet = false
+    @State private var showLocationPicker = false
+    @State private var editedLocationName: String?
+    @State private var editedLatitude: Double?
+    @State private var editedLongitude: Double?
 
     var body: some View {
         NavigationStack {
@@ -56,10 +61,25 @@ struct MemoryDetailView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
                         Button {
+                            showShareSheet = true
+                        } label: {
+                            Label("Share", systemImage: "square.and.arrow.up")
+                        }
+
+                        Button {
                             editedNote = memory.note ?? ""
                             showEditNote = true
                         } label: {
                             Label("Edit Note", systemImage: "pencil")
+                        }
+
+                        Button {
+                            editedLocationName = memory.locationName
+                            editedLatitude = memory.latitude
+                            editedLongitude = memory.longitude
+                            showLocationPicker = true
+                        } label: {
+                            Label("Edit Location", systemImage: "location")
                         }
 
                         Button(role: .destructive) {
@@ -92,7 +112,45 @@ struct MemoryDetailView: View {
             } message: {
                 Text("This cannot be undone.")
             }
+            .sheet(isPresented: $showShareSheet) {
+                if let imageData = memory.imageData,
+                   let uiImage = UIImage(data: imageData) {
+                    ShareSheet(items: [uiImage, shareText])
+                }
+            }
+            .sheet(isPresented: $showLocationPicker, onDismiss: saveLocation) {
+                LocationPickerView(
+                    selectedLocationName: $editedLocationName,
+                    selectedLatitude: $editedLatitude,
+                    selectedLongitude: $editedLongitude
+                )
+            }
         }
+    }
+
+    private func saveLocation() {
+        memory.locationName = editedLocationName
+        memory.latitude = editedLatitude
+        memory.longitude = editedLongitude
+    }
+
+    private var shareText: String {
+        var lines: [String] = []
+
+        if let note = memory.note, !note.isEmpty {
+            lines.append(note)
+            lines.append("")
+        }
+
+        if let locationName = memory.locationName {
+            lines.append("📍 \(locationName)")
+        }
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMM d, yyyy"
+        lines.append("📅 \(dateFormatter.string(from: memory.capturedAt))")
+
+        return lines.joined(separator: "\n")
     }
 
     private var infoOverlay: some View {
@@ -110,6 +168,19 @@ struct MemoryDetailView: View {
             }
             .font(.caption)
             .foregroundStyle(.white.opacity(0.7))
+
+            if let locationName = memory.locationName {
+                Button {
+                    openInMaps()
+                } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: "location.fill")
+                        Text(locationName)
+                    }
+                    .font(.caption)
+                    .foregroundStyle(.white.opacity(0.7))
+                }
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(20)
@@ -120,6 +191,13 @@ struct MemoryDetailView: View {
                 endPoint: .bottom
             )
         )
+    }
+
+    private func openInMaps() {
+        guard let lat = memory.latitude, let lon = memory.longitude else { return }
+        if let url = URL(string: "maps://?ll=\(lat),\(lon)") {
+            UIApplication.shared.open(url)
+        }
     }
 
     private var editNoteSheet: some View {
@@ -172,6 +250,18 @@ struct MemoryDetailView: View {
         modelContext.delete(memory)
         dismiss()
     }
+}
+
+// MARK: - Share Sheet
+
+struct ShareSheet: UIViewControllerRepresentable {
+    let items: [Any]
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: items, applicationActivities: nil)
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 
 #Preview {
