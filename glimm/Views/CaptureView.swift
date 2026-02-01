@@ -59,6 +59,11 @@ struct CaptureView: View {
                     .background(.ultraThinMaterial)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
                     .lineLimit(3...6)
+                    .onChange(of: note) { _, newValue in
+                        if newValue.count > 280 {
+                            note = String(newValue.prefix(280))
+                        }
+                    }
 
                 Text("\(note.count)/280")
                     .font(.caption)
