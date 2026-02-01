@@ -115,7 +115,7 @@ struct MemoryDetailView: View {
             .sheet(isPresented: $showShareSheet) {
                 if let imageData = memory.imageData,
                    let uiImage = UIImage(data: imageData) {
-                    ShareSheet(items: [uiImage, shareText])
+                    ShareSheet(items: [uiImage])
                 }
             }
             .sheet(isPresented: $showLocationPicker, onDismiss: saveLocation) {
@@ -132,25 +132,6 @@ struct MemoryDetailView: View {
         memory.locationName = editedLocationName
         memory.latitude = editedLatitude
         memory.longitude = editedLongitude
-    }
-
-    private var shareText: String {
-        var lines: [String] = []
-
-        if let note = memory.note, !note.isEmpty {
-            lines.append(note)
-            lines.append("")
-        }
-
-        if let locationName = memory.locationName {
-            lines.append("📍 \(locationName)")
-        }
-
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MMM d, yyyy"
-        lines.append("📅 \(dateFormatter.string(from: memory.capturedAt))")
-
-        return lines.joined(separator: "\n")
     }
 
     private var infoOverlay: some View {
