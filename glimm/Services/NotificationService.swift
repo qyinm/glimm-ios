@@ -16,10 +16,10 @@ class NotificationService {
         "What's happening right now?",
         "Capture this moment!",
         "What are you up to?",
-        "Time to save a memory",
+        "Time to make a memory",
         "What does your world look like?",
         "Pause and capture",
-        "Document this moment",
+        "Keep this moment",
         "What's around you?"
     ]
 
