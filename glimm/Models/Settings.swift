@@ -8,18 +8,11 @@ import SwiftData
 
 @Model
 final class Settings {
-    var id: UUID
-    var notifyStart: Date
-    var notifyEnd: Date
-    var notifyFrequency: Int
-    var notifyEnabled: Bool
+    var id: UUID = UUID()
+    var notifyStart: Date = Calendar.current.date(from: DateComponents(hour: 9, minute: 0)) ?? Date()
+    var notifyEnd: Date = Calendar.current.date(from: DateComponents(hour: 21, minute: 0)) ?? Date()
+    var notifyFrequency: Int = 3
+    var notifyEnabled: Bool = true
 
-    init() {
-        self.id = UUID()
-        let calendar = Calendar.current
-        self.notifyStart = calendar.date(from: DateComponents(hour: 9, minute: 0)) ?? .now
-        self.notifyEnd = calendar.date(from: DateComponents(hour: 21, minute: 0)) ?? .now
-        self.notifyFrequency = 3
-        self.notifyEnabled = true
-    }
+    init() {}
 }

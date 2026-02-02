@@ -8,11 +8,11 @@ import SwiftData
 
 @Model
 final class Memory {
-    var id: UUID
+    var id: UUID = UUID()
     @Attribute(.externalStorage) var imageData: Data?
     var note: String?
-    var capturedAt: Date
-    var createdAt: Date
+    var capturedAt: Date = Date()
+    var createdAt: Date = Date()
     var latitude: Double?
     var longitude: Double?
     var locationName: String?
