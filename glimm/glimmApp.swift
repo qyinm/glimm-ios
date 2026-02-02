@@ -18,7 +18,7 @@ struct glimmApp: App {
         let modelConfiguration = ModelConfiguration(
             schema: schema,
             isStoredInMemoryOnly: false,
-            cloudKitDatabase: .none
+            cloudKitDatabase: .automatic
         )
 
         do {
