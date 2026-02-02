@@ -26,6 +26,8 @@ struct SettingsView: View {
                 VStack(spacing: 24) {
                     notificationSection
 
+                    dataStorageSection
+
                     aboutSection
                 }
                 .padding(.horizontal, 16)
@@ -156,6 +158,34 @@ struct SettingsView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .padding(.horizontal, 4)
+        }
+    }
+
+    private var dataStorageSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Data Storage")
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .foregroundStyle(.secondary)
+                .padding(.leading, 4)
+
+            GlassCard(padding: 0) {
+                VStack(spacing: 0) {
+                    settingRow {
+                        HStack(spacing: 12) {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .foregroundStyle(.orange)
+                                .font(.system(size: 16))
+
+                            Text("Your memories are stored locally on this device. Deleting the app will permanently remove all your data.")
+                                .font(.callout)
+                                .lineLimit(nil)
+
+                            Spacer(minLength: 0)
+                        }
+                    }
+                }
+            }
         }
     }
 
