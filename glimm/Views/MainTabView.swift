@@ -60,6 +60,13 @@ struct MainTabView: View {
                 }
             }
         }
+        .onAppear {
+            // Check flag for cold launch (app was terminated when notification tapped)
+            if AppDelegate.shouldOpenCamera {
+                AppDelegate.shouldOpenCamera = false
+                showCapture = true
+            }
+        }
         .onReceive(NotificationCenter.default.publisher(for: .openCamera)) { _ in
             showCapture = true
         }

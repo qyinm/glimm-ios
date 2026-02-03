@@ -7,6 +7,9 @@ import UIKit
 import UserNotifications
 
 class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+    /// Flag to open camera when app launches from notification tap
+    static var shouldOpenCamera = false
+
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
@@ -21,6 +24,9 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
+        // Set flag for cold launch (when MainTabView isn't mounted yet)
+        AppDelegate.shouldOpenCamera = true
+        // Post notification for warm launch (when app is already running)
         NotificationCenter.default.post(name: .openCamera, object: nil)
         completionHandler()
     }
