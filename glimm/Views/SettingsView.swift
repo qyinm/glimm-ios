@@ -201,12 +201,23 @@ struct SettingsView: View {
                 .padding(.leading, 4)
 
             GlassCard(padding: 0) {
-                VStack(spacing: 0) {
-                    languageRow(title: String(localized: "settings.language.system"), value: "system")
-                    divider
-                    languageRow(title: "English", value: "en")
-                    divider
-                    languageRow(title: "한국어", value: "ko")
+                settingRow {
+                    HStack {
+                        Text(String(localized: "settings.language"))
+                        Spacer()
+                        Picker("", selection: $appLanguage) {
+                            Text(String(localized: "settings.language.system")).tag("system")
+                            Text("English").tag("en")
+                            Text("한국어").tag("ko")
+                        }
+                        .onChange(of: appLanguage) { _, newValue in
+                            if newValue == "system" {
+                                UserDefaults.standard.removeObject(forKey: "AppleLanguages")
+                            } else {
+                                UserDefaults.standard.set([newValue], forKey: "AppleLanguages")
+                            }
+                        }
+                    }
                 }
             }
 
@@ -279,30 +290,6 @@ struct SettingsView: View {
     private var divider: some View {
         Divider()
             .padding(.leading, 16)
-    }
-
-    private func languageRow(title: String, value: String) -> some View {
-        settingRow {
-            Button {
-                appLanguage = value
-                // Apply language change
-                if value == "system" {
-                    UserDefaults.standard.removeObject(forKey: "AppleLanguages")
-                } else {
-                    UserDefaults.standard.set([value], forKey: "AppleLanguages")
-                }
-            } label: {
-                HStack {
-                    Text(title)
-                        .foregroundStyle(.primary)
-                    Spacer()
-                    if appLanguage == value {
-                        Image(systemName: "checkmark")
-                            .foregroundStyle(.blue)
-                    }
-                }
-            }
-        }
     }
 
     private func rescheduleNotifications() {
