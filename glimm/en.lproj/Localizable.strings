@@ -1,0 +1,77 @@
+// MARK: - Home
+"home.empty.title" = "No memories yet";
+"home.empty.subtitle" = "Tap the + button to capture\nyour first moment";
+
+// MARK: - Calendar
+"calendar.title" = "Calendar";
+"calendar.weekday.sun" = "Sun";
+"calendar.weekday.mon" = "Mon";
+"calendar.weekday.tue" = "Tue";
+"calendar.weekday.wed" = "Wed";
+"calendar.weekday.thu" = "Thu";
+"calendar.weekday.fri" = "Fri";
+"calendar.weekday.sat" = "Sat";
+"calendar.done" = "Done";
+
+// MARK: - Capture
+"capture.note.title" = "Add a note";
+"capture.note.placeholder" = "What's happening right now?";
+"capture.location.add" = "Add Location";
+
+// MARK: - Common
+"common.cancel" = "Cancel";
+"common.save" = "Save";
+"common.done" = "Done";
+
+// MARK: - Memory Detail
+"detail.share" = "Share";
+"detail.editNote" = "Edit Note";
+"detail.editLocation" = "Edit Location";
+"detail.delete" = "Delete";
+"detail.deleteMemory" = "Delete Memory";
+"detail.deleteWarning" = "This cannot be undone.";
+"detail.editNote.title" = "Edit note";
+"detail.editNote.placeholder" = "What's happening?";
+"detail.time.at" = "at";
+
+// MARK: - Location Picker
+"location.tab.search" = "Search";
+"location.tab.map" = "Map";
+"location.title" = "Location";
+"location.selected" = "Selected";
+"location.searchResults" = "Search Results";
+"location.remove" = "Remove Location";
+"location.searchPrompt" = "Search location";
+"location.finding" = "Finding location...";
+"location.map.changeHint" = "Tap anywhere on the map to change location";
+"location.map.selectHint" = "Tap on the map to select a location";
+
+// MARK: - Settings
+"settings.title" = "Settings";
+"settings.notifications" = "Notifications";
+"settings.notifications.enable" = "Enable Notifications";
+"settings.notifications.startTime" = "Start Time";
+"settings.notifications.endTime" = "End Time";
+"settings.notifications.frequency %lld" = "Frequency: %lld per day";
+"settings.notifications.description" = "glimm will send random reminders during your active hours to capture moments.";
+"settings.dataStorage" = "Data Storage";
+"settings.dataStorage.warning" = "Your memories are stored locally on this device. Deleting the app will permanently remove all your data.";
+"settings.about" = "About";
+"settings.about.version" = "Version";
+"settings.about.privacy" = "Privacy Policy";
+"settings.about.terms" = "Terms of Service";
+
+// MARK: - Main Tab
+"tab.timeline" = "Timeline";
+"tab.calendar" = "Calendar";
+"tab.settings" = "Settings";
+
+// MARK: - Notifications
+"notification.message1" = "What's happening right now?";
+"notification.message2" = "Capture this moment!";
+"notification.message3" = "What are you up to?";
+"notification.message4" = "Time to make a memory";
+"notification.message5" = "What does your world look like?";
+"notification.message6" = "Pause and capture";
+"notification.message7" = "Keep this moment";
+"notification.message8" = "What's around you?";

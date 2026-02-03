@@ -35,11 +35,11 @@ struct HomeView: View {
                 .font(.system(size: 48))
                 .foregroundStyle(.tertiary)
 
-            Text("No memories yet")
+            Text(String(localized: "home.empty.title"))
                 .font(.title2)
                 .fontWeight(.semibold)
 
-            Text("Tap the + button to capture\nyour first moment")
+            Text(String(localized: "home.empty.subtitle"))
                 .font(.body)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)

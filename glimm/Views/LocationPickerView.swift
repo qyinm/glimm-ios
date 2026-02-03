@@ -28,8 +28,8 @@ struct LocationPickerView: View {
             VStack(spacing: 0) {
                 // Tab picker
                 Picker("Mode", selection: $selectedTab) {
-                    Text("Search").tag(0)
-                    Text("Map").tag(1)
+                    Text(String(localized: "location.tab.search")).tag(0)
+                    Text(String(localized: "location.tab.map")).tag(1)
                 }
                 .pickerStyle(.segmented)
                 .padding()
@@ -40,17 +40,17 @@ struct LocationPickerView: View {
                     mapView
                 }
             }
-            .navigationTitle("Location")
+            .navigationTitle(String(localized: "location.title"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel") {
+                    Button(String(localized: "common.cancel")) {
                         dismiss()
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     if selectedTab == 1 && selectedMapLocation != nil {
-                        Button("Done") {
+                        Button(String(localized: "common.done")) {
                             dismiss()
                         }
                         .fontWeight(.semibold)
@@ -79,7 +79,7 @@ struct LocationPickerView: View {
                             .foregroundStyle(.blue)
                     }
                 } header: {
-                    Text("Selected")
+                    Text(String(localized: "location.selected"))
                 }
             }
 
@@ -102,7 +102,7 @@ struct LocationPickerView: View {
                         }
                     }
                 } header: {
-                    Text("Search Results")
+                    Text(String(localized: "location.searchResults"))
                 }
             }
 
@@ -118,13 +118,13 @@ struct LocationPickerView: View {
                     } label: {
                         HStack {
                             Image(systemName: "location.slash")
-                            Text("Remove Location")
+                            Text(String(localized: "location.remove"))
                         }
                     }
                 }
             }
         }
-        .searchable(text: $searchText, prompt: "Search location")
+        .searchable(text: $searchText, prompt: String(localized: "location.searchPrompt"))
         .onChange(of: searchText) { _, newValue in
             searchCompleter.search(query: newValue)
         }
@@ -156,7 +156,7 @@ struct LocationPickerView: View {
                     HStack {
                         ProgressView()
                             .scaleEffect(0.8)
-                        Text("Finding location...")
+                        Text(String(localized: "location.finding"))
                             .font(.subheadline)
                     }
                     .padding()
@@ -173,7 +173,7 @@ struct LocationPickerView: View {
                             Spacer()
                         }
 
-                        Text("Tap anywhere on the map to change location")
+                        Text(String(localized: "location.map.changeHint"))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -182,7 +182,7 @@ struct LocationPickerView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 12))
                     .padding()
                 } else {
-                    Text("Tap on the map to select a location")
+                    Text(String(localized: "location.map.selectHint"))
                         .font(.subheadline)
                         .padding()
                         .background(.ultraThinMaterial)

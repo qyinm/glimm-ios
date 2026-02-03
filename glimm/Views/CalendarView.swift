@@ -15,7 +15,7 @@ struct CalendarView: View {
 
     private let calendar = Calendar.current
     private let columns = Array(repeating: GridItem(.flexible()), count: 7)
-    private let weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+    private let weekdays = [String(localized: "calendar.weekday.sun"), String(localized: "calendar.weekday.mon"), String(localized: "calendar.weekday.tue"), String(localized: "calendar.weekday.wed"), String(localized: "calendar.weekday.thu"), String(localized: "calendar.weekday.fri"), String(localized: "calendar.weekday.sat")]
 
     var body: some View {
         NavigationStack {
@@ -29,7 +29,7 @@ struct CalendarView: View {
                 Spacer()
             }
             .padding(.bottom, 100) // Space for tab bar
-            .navigationTitle("Calendar")
+            .navigationTitle(String(localized: "calendar.title"))
             .navigationBarTitleDisplayMode(.large)
             .background(Color(.systemBackground))
             .sheet(item: Binding(
@@ -197,7 +197,7 @@ struct DayMemoriesSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") {
+                    Button(String(localized: "calendar.done")) {
                         dismiss()
                     }
                 }

@@ -34,7 +34,7 @@ struct SettingsView: View {
                 .padding(.vertical, 8)
                 .padding(.bottom, 100) // Space for tab bar
             }
-            .navigationTitle("Settings")
+            .navigationTitle(String(localized: "settings.title"))
             .navigationBarTitleDisplayMode(.large)
             .background(Color(.systemBackground))
         }
@@ -42,7 +42,7 @@ struct SettingsView: View {
 
     private var notificationSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Notifications")
+            Text(String(localized: "settings.notifications"))
                 .font(.subheadline)
                 .fontWeight(.medium)
                 .foregroundStyle(.secondary)
@@ -52,7 +52,7 @@ struct SettingsView: View {
                 VStack(spacing: 0) {
                     // Enable toggle
                     settingRow {
-                        Toggle("Enable Notifications", isOn: Binding(
+                        Toggle(String(localized: "settings.notifications.enable"), isOn: Binding(
                             get: { settings.notifyEnabled },
                             set: { newValue in
                                 settings.notifyEnabled = newValue
@@ -75,7 +75,7 @@ struct SettingsView: View {
                         // Start time
                         settingRow {
                             HStack {
-                                Text("Start Time")
+                                Text(String(localized: "settings.notifications.startTime"))
                                 Spacer()
                                 DatePicker(
                                     "",
@@ -97,7 +97,7 @@ struct SettingsView: View {
                         // End time
                         settingRow {
                             HStack {
-                                Text("End Time")
+                                Text(String(localized: "settings.notifications.endTime"))
                                 Spacer()
                                 DatePicker(
                                     "",
@@ -119,7 +119,7 @@ struct SettingsView: View {
                         // Frequency
                         settingRow {
                             HStack {
-                                Text("Frequency: \(settings.notifyFrequency) per day")
+                                Text("settings.notifications.frequency \(settings.notifyFrequency)", bundle: .main)
                                 Spacer()
                                 HStack(spacing: 0) {
                                     Button {
@@ -154,7 +154,7 @@ struct SettingsView: View {
                 }
             }
 
-            Text("glimm will send random reminders during your active hours to capture moments.")
+            Text(String(localized: "settings.notifications.description"))
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .padding(.horizontal, 4)
@@ -163,7 +163,7 @@ struct SettingsView: View {
 
     private var dataStorageSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Data Storage")
+            Text(String(localized: "settings.dataStorage"))
                 .font(.subheadline)
                 .fontWeight(.medium)
                 .foregroundStyle(.secondary)
@@ -177,7 +177,7 @@ struct SettingsView: View {
                                 .foregroundStyle(.orange)
                                 .font(.system(size: 16))
 
-                            Text("Your memories are stored locally on this device. Deleting the app will permanently remove all your data.")
+                            Text(String(localized: "settings.dataStorage.warning"))
                                 .font(.callout)
                                 .lineLimit(nil)
 
@@ -191,7 +191,7 @@ struct SettingsView: View {
 
     private var aboutSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("About")
+            Text(String(localized: "settings.about"))
                 .font(.subheadline)
                 .fontWeight(.medium)
                 .foregroundStyle(.secondary)
@@ -201,7 +201,7 @@ struct SettingsView: View {
                 VStack(spacing: 0) {
                     settingRow {
                         HStack {
-                            Text("Version")
+                            Text(String(localized: "settings.about.version"))
                             Spacer()
                             Text("1.1.0")
                                 .foregroundStyle(.secondary)
@@ -213,7 +213,7 @@ struct SettingsView: View {
                     settingRow {
                         Link(destination: URL(string: "https://glimm-landing-page.vercel.app/privacy")!) {
                             HStack {
-                                Text("Privacy Policy")
+                                Text(String(localized: "settings.about.privacy"))
                                     .foregroundStyle(.primary)
                                 Spacer()
                                 Image(systemName: "arrow.up.right")
@@ -228,7 +228,7 @@ struct SettingsView: View {
                     settingRow {
                         Link(destination: URL(string: "https://glimm-landing-page.vercel.app/terms")!) {
                             HStack {
-                                Text("Terms of Service")
+                                Text(String(localized: "settings.about.terms"))
                                     .foregroundStyle(.primary)
                                 Spacer()
                                 Image(systemName: "arrow.up.right")

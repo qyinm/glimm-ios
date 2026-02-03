@@ -49,11 +49,11 @@ struct CaptureView: View {
                         .clipShape(RoundedRectangle(cornerRadius: 16))
                 }
 
-                Text("Add a note")
+                Text(String(localized: "capture.note.title"))
                     .font(.title2)
                     .fontWeight(.semibold)
 
-                TextField("What's happening right now?", text: $note, axis: .vertical)
+                TextField(String(localized: "capture.note.placeholder"), text: $note, axis: .vertical)
                     .textFieldStyle(.plain)
                     .padding(16)
                     .background(.ultraThinMaterial)
@@ -81,7 +81,7 @@ struct CaptureView: View {
                             Text(locationName)
                                 .foregroundStyle(.primary)
                         } else {
-                            Text("Add Location")
+                            Text(String(localized: "capture.location.add"))
                                 .foregroundStyle(.secondary)
                         }
                         Spacer()
@@ -100,13 +100,13 @@ struct CaptureView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel") {
+                    Button(String(localized: "common.cancel")) {
                         showNoteInput = false
                         dismiss()
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Save") {
+                    Button(String(localized: "common.save")) {
                         saveMemory()
                     }
                     .fontWeight(.semibold)

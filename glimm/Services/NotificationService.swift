@@ -13,14 +13,14 @@ class NotificationService {
     private let center = UNUserNotificationCenter.current()
 
     private let messages = [
-        "What's happening right now?",
-        "Capture this moment!",
-        "What are you up to?",
-        "Time to make a memory",
-        "What does your world look like?",
-        "Pause and capture",
-        "Keep this moment",
-        "What's around you?"
+        String(localized: "notification.message1"),
+        String(localized: "notification.message2"),
+        String(localized: "notification.message3"),
+        String(localized: "notification.message4"),
+        String(localized: "notification.message5"),
+        String(localized: "notification.message6"),
+        String(localized: "notification.message7"),
+        String(localized: "notification.message8")
     ]
 
     private init() {}
@@ -105,7 +105,7 @@ class NotificationService {
     private func scheduleNotification(at date: Date) async {
         let content = UNMutableNotificationContent()
         content.title = "glimm"
-        content.body = messages.randomElement() ?? "What's happening right now?"
+        content.body = messages.randomElement() ?? String(localized: "notification.message1")
         content.sound = .default
 
         let calendar = Calendar.current

@@ -63,14 +63,14 @@ struct MemoryDetailView: View {
                         Button {
                             showShareSheet = true
                         } label: {
-                            Label("Share", systemImage: "square.and.arrow.up")
+                            Label(String(localized: "detail.share"), systemImage: "square.and.arrow.up")
                         }
 
                         Button {
                             editedNote = memory.note ?? ""
                             showEditNote = true
                         } label: {
-                            Label("Edit Note", systemImage: "pencil")
+                            Label(String(localized: "detail.editNote"), systemImage: "pencil")
                         }
 
                         Button {
@@ -79,13 +79,13 @@ struct MemoryDetailView: View {
                             editedLongitude = memory.longitude
                             showLocationPicker = true
                         } label: {
-                            Label("Edit Location", systemImage: "location")
+                            Label(String(localized: "detail.editLocation"), systemImage: "location")
                         }
 
                         Button(role: .destructive) {
                             showDeleteConfirmation = true
                         } label: {
-                            Label("Delete", systemImage: "trash")
+                            Label(String(localized: "detail.delete"), systemImage: "trash")
                         }
                     } label: {
                         Image(systemName: "ellipsis")
@@ -102,15 +102,15 @@ struct MemoryDetailView: View {
                 editNoteSheet
             }
             .confirmationDialog(
-                "Delete Memory",
+                String(localized: "detail.deleteMemory"),
                 isPresented: $showDeleteConfirmation,
                 titleVisibility: .visible
             ) {
-                Button("Delete", role: .destructive) {
+                Button(String(localized: "detail.delete"), role: .destructive) {
                     deleteMemory()
                 }
             } message: {
-                Text("This cannot be undone.")
+                Text(String(localized: "detail.deleteWarning"))
             }
             .sheet(isPresented: $showShareSheet) {
                 if let imageData = memory.imageData,
@@ -144,7 +144,7 @@ struct MemoryDetailView: View {
 
             HStack {
                 Text(memory.capturedAt, format: .dateTime.month().day().year())
-                Text("at")
+                Text(String(localized: "detail.time.at"))
                 Text(memory.capturedAt, format: .dateTime.hour().minute())
             }
             .font(.caption)
@@ -184,11 +184,11 @@ struct MemoryDetailView: View {
     private var editNoteSheet: some View {
         NavigationStack {
             VStack(spacing: 24) {
-                Text("Edit note")
+                Text(String(localized: "detail.editNote.title"))
                     .font(.title2)
                     .fontWeight(.semibold)
 
-                TextField("What's happening?", text: $editedNote, axis: .vertical)
+                TextField(String(localized: "detail.editNote.placeholder"), text: $editedNote, axis: .vertical)
                     .textFieldStyle(.plain)
                     .padding(16)
                     .background(.ultraThinMaterial)
@@ -211,12 +211,12 @@ struct MemoryDetailView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel") {
+                    Button(String(localized: "common.cancel")) {
                         showEditNote = false
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Save") {
+                    Button(String(localized: "common.save")) {
                         saveNote()
                     }
                     .fontWeight(.semibold)
