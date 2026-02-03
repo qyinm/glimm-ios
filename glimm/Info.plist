@@ -6,6 +6,8 @@
 	<false/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>glimm uses your location to tag where your memories were captured.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>glimm needs permission to save photos to your album for backup.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>

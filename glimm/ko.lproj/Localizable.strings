@@ -56,6 +56,22 @@
 "settings.notifications.description" = "glimm이 활동 시간 동안 순간을 기록하라는 랜덤 알림을 보냅니다.";
 "settings.dataStorage" = "데이터 저장";
 "settings.dataStorage.warning" = "추억은 이 기기에 로컬로 저장됩니다. 앱을 삭제하면 모든 데이터가 영구적으로 삭제됩니다.";
+
+// MARK: - Export
+"settings.export" = "내보내기";
+"settings.export.photos" = "사진 앨범에 저장";
+"settings.export.photos.description" = "모든 사진을 'glimm' 앨범에 저장";
+"settings.export.zip" = "백업 생성";
+"settings.export.zip.description" = "사진과 메모를 ZIP 파일로 내보내기";
+"settings.export.inProgress" = "내보내는 중...";
+"settings.export.success" = "내보내기 완료";
+"settings.export.success.photos %lld" = "%lld장의 사진을 앨범에 저장했습니다";
+"settings.export.success.zip" = "백업이 생성되었습니다";
+"settings.export.error" = "내보내기 실패";
+"settings.export.error.photosAccess" = "사진 접근이 거부되었습니다. 설정에서 권한을 허용해주세요.";
+"settings.export.error.albumCreation" = "앨범 생성에 실패했습니다";
+"settings.export.error.archiveCreation" = "백업 파일 생성에 실패했습니다";
+"settings.export.noMemories" = "내보낼 추억이 없습니다";
 "settings.language" = "언어";
 "settings.language.system" = "시스템 설정";
 "settings.language.description" = "언어 변경 후 앱을 다시 시작해야 할 수 있습니다.";

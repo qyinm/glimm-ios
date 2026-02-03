@@ -56,6 +56,22 @@
 "settings.notifications.description" = "glimm will send random reminders during your active hours to capture moments.";
 "settings.dataStorage" = "Data Storage";
 "settings.dataStorage.warning" = "Your memories are stored locally on this device. Deleting the app will permanently remove all your data.";
+
+// MARK: - Export
+"settings.export" = "Export";
+"settings.export.photos" = "Save to Photos Album";
+"settings.export.photos.description" = "Save all photos to a 'glimm' album";
+"settings.export.zip" = "Create Backup";
+"settings.export.zip.description" = "Export photos and notes as ZIP file";
+"settings.export.inProgress" = "Exporting...";
+"settings.export.success" = "Export Complete";
+"settings.export.success.photos %lld" = "Saved %lld photos to album";
+"settings.export.success.zip" = "Backup created successfully";
+"settings.export.error" = "Export Failed";
+"settings.export.error.photosAccess" = "Photos access denied. Please allow access in Settings.";
+"settings.export.error.albumCreation" = "Failed to create album";
+"settings.export.error.archiveCreation" = "Failed to create backup archive";
+"settings.export.noMemories" = "No memories to export";
 "settings.language" = "Language";
 "settings.language.system" = "System Default";
 "settings.language.description" = "Changing language may require restarting the app.";

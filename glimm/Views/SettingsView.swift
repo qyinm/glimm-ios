@@ -10,7 +10,17 @@ struct SettingsView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.modelContext) private var modelContext
     @Query private var settingsArray: [Settings]
+    @Query(sort: \Memory.capturedAt, order: .reverse) private var memories: [Memory]
     @AppStorage("appLanguage") private var appLanguage: String = "system"
+
+    // Export state
+    @State private var isExporting = false
+    @State private var exportProgress: String = ""
+    @State private var showExportAlert = false
+    @State private var exportAlertTitle = ""
+    @State private var exportAlertMessage = ""
+    @State private var zipFileURL: URL?
+    @State private var showShareSheet = false
 
     private var settings: Settings {
         if let existing = settingsArray.first {
@@ -187,8 +197,125 @@ struct SettingsView: View {
                             Spacer(minLength: 0)
                         }
                     }
+
+                    divider
+
+                    // Export to Photos Album
+                    settingRow {
+                        Button {
+                            exportToPhotos()
+                        } label: {
+                            HStack {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(String(localized: "settings.export.photos"))
+                                        .foregroundStyle(.primary)
+                                    Text(String(localized: "settings.export.photos.description"))
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                Spacer()
+                                Image(systemName: "photo.on.rectangle.angled")
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .disabled(isExporting || memories.isEmpty)
+                    }
+
+                    divider
+
+                    // Create ZIP Backup
+                    settingRow {
+                        Button {
+                            createBackup()
+                        } label: {
+                            HStack {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(String(localized: "settings.export.zip"))
+                                        .foregroundStyle(.primary)
+                                    Text(String(localized: "settings.export.zip.description"))
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                Spacer()
+                                Image(systemName: "doc.zipper")
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .disabled(isExporting || memories.isEmpty)
+                    }
+
+                    if isExporting {
+                        divider
+
+                        settingRow {
+                            HStack {
+                                ProgressView()
+                                    .scaleEffect(0.8)
+                                Text(exportProgress)
+                                    .font(.callout)
+                                    .foregroundStyle(.secondary)
+                                Spacer()
+                            }
+                        }
+                    }
                 }
             }
+
+            if memories.isEmpty {
+                Text(String(localized: "settings.export.noMemories"))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal, 4)
+            }
+        }
+        .alert(exportAlertTitle, isPresented: $showExportAlert) {
+            Button(String(localized: "common.done"), role: .cancel) {}
+        } message: {
+            Text(exportAlertMessage)
+        }
+        .sheet(isPresented: $showShareSheet) {
+            if let url = zipFileURL {
+                ShareSheet(items: [url])
+            }
+        }
+    }
+
+    private func exportToPhotos() {
+        isExporting = true
+        exportProgress = String(localized: "settings.export.inProgress")
+
+        Task {
+            do {
+                let count = try await ExportService.shared.exportToPhotosAlbum(memories: memories)
+                exportAlertTitle = String(localized: "settings.export.success")
+                exportAlertMessage = String(localized: "settings.export.success.photos \(count)")
+                showExportAlert = true
+            } catch {
+                exportAlertTitle = String(localized: "settings.export.error")
+                exportAlertMessage = error.localizedDescription
+                showExportAlert = true
+            }
+            isExporting = false
+            exportProgress = ""
+        }
+    }
+
+    private func createBackup() {
+        isExporting = true
+        exportProgress = String(localized: "settings.export.inProgress")
+
+        Task {
+            do {
+                let url = try await ExportService.shared.createBackupArchive(memories: memories)
+                zipFileURL = url
+                showShareSheet = true
+            } catch {
+                exportAlertTitle = String(localized: "settings.export.error")
+                exportAlertMessage = error.localizedDescription
+                showExportAlert = true
+            }
+            isExporting = false
+            exportProgress = ""
         }
     }
 
