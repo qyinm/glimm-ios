@@ -56,6 +56,9 @@
 "settings.notifications.description" = "glimm will send random reminders during your active hours to capture moments.";
 "settings.dataStorage" = "Data Storage";
 "settings.dataStorage.warning" = "Your memories are stored locally on this device. Deleting the app will permanently remove all your data.";
+"settings.language" = "Language";
+"settings.language.system" = "System Default";
+"settings.language.description" = "Changing language may require restarting the app.";
 "settings.about" = "About";
 "settings.about.version" = "Version";
 "settings.about.privacy" = "Privacy Policy";

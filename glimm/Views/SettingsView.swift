@@ -10,6 +10,7 @@ struct SettingsView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.modelContext) private var modelContext
     @Query private var settingsArray: [Settings]
+    @AppStorage("appLanguage") private var appLanguage: String = "system"
 
     private var settings: Settings {
         if let existing = settingsArray.first {
@@ -27,6 +28,8 @@ struct SettingsView: View {
                     notificationSection
 
                     dataStorageSection
+
+                    languageSection
 
                     aboutSection
                 }
@@ -189,6 +192,31 @@ struct SettingsView: View {
         }
     }
 
+    private var languageSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text(String(localized: "settings.language"))
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .foregroundStyle(.secondary)
+                .padding(.leading, 4)
+
+            GlassCard(padding: 0) {
+                VStack(spacing: 0) {
+                    languageRow(title: String(localized: "settings.language.system"), value: "system")
+                    divider
+                    languageRow(title: "English", value: "en")
+                    divider
+                    languageRow(title: "한국어", value: "ko")
+                }
+            }
+
+            Text(String(localized: "settings.language.description"))
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, 4)
+        }
+    }
+
     private var aboutSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(String(localized: "settings.about"))
@@ -251,6 +279,30 @@ struct SettingsView: View {
     private var divider: some View {
         Divider()
             .padding(.leading, 16)
+    }
+
+    private func languageRow(title: String, value: String) -> some View {
+        settingRow {
+            Button {
+                appLanguage = value
+                // Apply language change
+                if value == "system" {
+                    UserDefaults.standard.removeObject(forKey: "AppleLanguages")
+                } else {
+                    UserDefaults.standard.set([value], forKey: "AppleLanguages")
+                }
+            } label: {
+                HStack {
+                    Text(title)
+                        .foregroundStyle(.primary)
+                    Spacer()
+                    if appLanguage == value {
+                        Image(systemName: "checkmark")
+                            .foregroundStyle(.blue)
+                    }
+                }
+            }
+        }
     }
 
     private func rescheduleNotifications() {

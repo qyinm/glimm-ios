@@ -56,6 +56,9 @@
 "settings.notifications.description" = "glimm이 활동 시간 동안 순간을 기록하라는 랜덤 알림을 보냅니다.";
 "settings.dataStorage" = "데이터 저장";
 "settings.dataStorage.warning" = "추억은 이 기기에 로컬로 저장됩니다. 앱을 삭제하면 모든 데이터가 영구적으로 삭제됩니다.";
+"settings.language" = "언어";
+"settings.language.system" = "시스템 설정";
+"settings.language.description" = "언어 변경 후 앱을 다시 시작해야 할 수 있습니다.";
 "settings.about" = "정보";
 "settings.about.version" = "버전";
 "settings.about.privacy" = "개인정보 처리방침";
