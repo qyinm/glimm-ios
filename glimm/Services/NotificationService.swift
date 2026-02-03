@@ -64,6 +64,9 @@ class NotificationService {
         }
     }
 
+    /// Minimum gap between notifications in minutes
+    private let minimumGapMinutes = 30
+
     private func generateRandomTimes(
         count: Int,
         start: Date,
@@ -82,11 +85,19 @@ class NotificationService {
 
         guard endMinutes > startMinutes else { return [] }
 
-        let range = endMinutes - startMinutes
+        let totalRange = endMinutes - startMinutes
         var times: [Date] = []
 
-        for _ in 0..<count {
-            let randomMinutes = startMinutes + Int.random(in: 0..<range)
+        // Divide time range into segments to ensure minimum gap
+        let segmentSize = totalRange / count
+
+        for i in 0..<count {
+            let segmentStart = startMinutes + (i * segmentSize)
+            let segmentEnd = min(segmentStart + segmentSize - minimumGapMinutes, endMinutes)
+
+            guard segmentEnd > segmentStart else { continue }
+
+            let randomMinutes = Int.random(in: segmentStart..<segmentEnd)
             let hour = randomMinutes / 60
             let minute = randomMinutes % 60
 
