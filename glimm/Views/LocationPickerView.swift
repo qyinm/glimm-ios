@@ -160,8 +160,7 @@ struct LocationPickerView: View {
                             .font(.subheadline)
                     }
                     .padding()
-                    .background(.ultraThinMaterial)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .glassEffect(cornerRadius: 12)
                     .padding()
                 } else if let name = selectedLocationName {
                     VStack(spacing: 8) {
@@ -178,15 +177,13 @@ struct LocationPickerView: View {
                             .foregroundStyle(.secondary)
                     }
                     .padding()
-                    .background(.ultraThinMaterial)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .glassEffect(cornerRadius: 12)
                     .padding()
                 } else {
                     Text(String(localized: "location.map.selectHint"))
                         .font(.subheadline)
                         .padding()
-                        .background(.ultraThinMaterial)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .glassEffect(cornerRadius: 12)
                         .padding()
                 }
             }
