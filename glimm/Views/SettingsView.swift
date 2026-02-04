@@ -9,7 +9,6 @@ import SwiftData
 struct SettingsView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.modelContext) private var modelContext
-    @Query private var settingsArray: [Settings]
     @Query(sort: \Memory.capturedAt, order: .reverse) private var memories: [Memory]
     @AppStorage("appLanguage") private var appLanguage: String = "system"
 
@@ -23,12 +22,7 @@ struct SettingsView: View {
     @State private var showShareSheet = false
 
     private var settings: Settings {
-        if let existing = settingsArray.first {
-            return existing
-        }
-        let newSettings = Settings()
-        modelContext.insert(newSettings)
-        return newSettings
+        Settings.getOrCreate(in: modelContext)
     }
 
     var body: some View {

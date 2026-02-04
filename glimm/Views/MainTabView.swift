@@ -9,18 +9,12 @@ import SwiftData
 struct MainTabView: View {
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.modelContext) private var modelContext
-    @Query private var allSettings: [Settings]
 
     @State private var selectedTab = 0
     @State private var showCapture = false
 
     private var settings: Settings {
-        if let existing = allSettings.first {
-            return existing
-        }
-        let newSettings = Settings()
-        modelContext.insert(newSettings)
-        return newSettings
+        Settings.getOrCreate(in: modelContext)
     }
 
     var body: some View {

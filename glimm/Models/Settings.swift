@@ -15,4 +15,16 @@ final class Settings {
     var notifyEnabled: Bool = true
 
     init() {}
+
+    /// Gets the existing Settings or creates a new one if none exists
+    @MainActor
+    static func getOrCreate(in context: ModelContext) -> Settings {
+        let descriptor = FetchDescriptor<Settings>()
+        if let existing = (try? context.fetch(descriptor))?.first {
+            return existing
+        }
+        let newSettings = Settings()
+        context.insert(newSettings)
+        return newSettings
+    }
 }
