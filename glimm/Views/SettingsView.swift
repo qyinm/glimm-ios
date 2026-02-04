@@ -159,8 +159,7 @@ struct SettingsView: View {
                                     }
                                 }
                                 .foregroundStyle(.primary)
-                                .background(.ultraThinMaterial)
-                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                                .glassEffect(cornerRadius: 10)
                             }
                         }
                     }
@@ -369,7 +368,7 @@ struct SettingsView: View {
                         HStack {
                             Text(String(localized: "settings.about.version"))
                             Spacer()
-                            Text("1.1.0")
+                            Text(AppConstants.appVersion)
                                 .foregroundStyle(.secondary)
                         }
                     }
@@ -377,7 +376,7 @@ struct SettingsView: View {
                     divider
 
                     settingRow {
-                        Link(destination: URL(string: "https://glimm-landing-page.vercel.app/privacy")!) {
+                        Link(destination: AppURLs.privacy) {
                             HStack {
                                 Text(String(localized: "settings.about.privacy"))
                                     .foregroundStyle(.primary)
@@ -392,7 +391,7 @@ struct SettingsView: View {
                     divider
 
                     settingRow {
-                        Link(destination: URL(string: "https://glimm-landing-page.vercel.app/terms")!) {
+                        Link(destination: AppURLs.terms) {
                             HStack {
                                 Text(String(localized: "settings.about.terms"))
                                     .foregroundStyle(.primary)

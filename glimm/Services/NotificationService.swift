@@ -65,7 +65,7 @@ class NotificationService {
     }
 
     /// Minimum gap between notifications in minutes
-    private let minimumGapMinutes = 30
+    private let minimumGapMinutes = AppConstants.notificationMinimumGapMinutes
 
     private func generateRandomTimes(
         count: Int,

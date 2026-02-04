@@ -158,7 +158,7 @@ final class ExportService {
         // Write metadata.json
         let metadata: [String: Any] = [
             "exportedAt": ISO8601DateFormatter().string(from: Date()),
-            "appVersion": "1.1.0",
+            "appVersion": AppConstants.appVersion,
             "memoriesCount": metadataEntries.count,
             "memories": metadataEntries
         ]
