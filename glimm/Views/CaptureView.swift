@@ -53,22 +53,10 @@ struct CaptureView: View {
                     .font(.title2)
                     .fontWeight(.semibold)
 
-                TextField(String(localized: "capture.note.placeholder"), text: $note, axis: .vertical)
-                    .textFieldStyle(.plain)
-                    .padding(16)
-                    .background(.ultraThinMaterial)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .lineLimit(3...6)
-                    .onChange(of: note) { _, newValue in
-                        if newValue.count > 280 {
-                            note = String(newValue.prefix(280))
-                        }
-                    }
-
-                Text("\(note.count)/280")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .trailing)
+                NoteTextField(
+                    text: $note,
+                    placeholder: String(localized: "capture.note.placeholder")
+                )
 
                 // Location picker button
                 Button {
@@ -90,8 +78,7 @@ struct CaptureView: View {
                             .foregroundStyle(.secondary)
                     }
                     .padding(16)
-                    .background(.ultraThinMaterial)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .glassEffect(cornerRadius: 12)
                 }
 
                 Spacer()

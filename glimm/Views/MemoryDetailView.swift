@@ -188,22 +188,10 @@ struct MemoryDetailView: View {
                     .font(.title2)
                     .fontWeight(.semibold)
 
-                TextField(String(localized: "detail.editNote.placeholder"), text: $editedNote, axis: .vertical)
-                    .textFieldStyle(.plain)
-                    .padding(16)
-                    .background(.ultraThinMaterial)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .lineLimit(3...6)
-                    .onChange(of: editedNote) { _, newValue in
-                        if newValue.count > 280 {
-                            editedNote = String(newValue.prefix(280))
-                        }
-                    }
-
-                Text("\(editedNote.count)/280")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .trailing)
+                NoteTextField(
+                    text: $editedNote,
+                    placeholder: String(localized: "detail.editNote.placeholder")
+                )
 
                 Spacer()
             }
