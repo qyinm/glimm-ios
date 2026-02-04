@@ -8,7 +8,7 @@ import UserNotifications
 
 class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     /// Flag to open camera when app launches from notification tap
-    static var shouldOpenCamera = false
+    @MainActor static var shouldOpenCamera = false
 
     func application(
         _ application: UIApplication,
