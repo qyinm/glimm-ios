@@ -89,93 +89,134 @@ final class ExportService {
             throw ExportError.noMemories
         }
 
+        let backupName = generateBackupName()
+        let backupDir = try createBackupDirectory(named: backupName)
+
+        defer {
+            cleanupBackupDirectory(backupDir)
+        }
+
+        let metadataEntries = try saveMemoriesToDirectory(memories, at: backupDir)
+        try writeMetadataFile(entries: metadataEntries, to: backupDir)
+
+        return try compressToZip(directory: backupDir, named: backupName)
+    }
+
+    // MARK: - Private Helpers
+
+    private func generateBackupName() -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
-        let backupName = "glimm-backup-\(dateFormatter.string(from: Date()))"
+        return "glimm-backup-\(dateFormatter.string(from: Date()))"
+    }
 
+    private func createBackupDirectory(named name: String) throws -> URL {
         let tempDir = FileManager.default.temporaryDirectory
-        let backupDir = tempDir.appendingPathComponent(backupName, isDirectory: true)
-
-        // Clean up if exists
+        let backupDir = tempDir.appendingPathComponent(name, isDirectory: true)
         try? FileManager.default.removeItem(at: backupDir)
         try FileManager.default.createDirectory(at: backupDir, withIntermediateDirectories: true)
+        return backupDir
+    }
 
-        // Prepare metadata
-        var metadataEntries: [[String: Any]] = []
-
+    private func saveMemoriesToDirectory(_ memories: [Memory], at backupDir: URL) throws -> [[String: Any]] {
         let monthFormatter = DateFormatter()
         monthFormatter.dateFormat = "yyyy-MM"
 
         let fileFormatter = DateFormatter()
         fileFormatter.dateFormat = "dd_HH-mm"
 
+        let isoFormatter = ISO8601DateFormatter()
+
+        var metadataEntries: [[String: Any]] = []
+
         for memory in memories {
-            guard let imageData = memory.imageData else { continue }
-
-            let monthFolder = monthFormatter.string(from: memory.capturedAt)
-            let monthDir = backupDir.appendingPathComponent(monthFolder, isDirectory: true)
-
-            if !FileManager.default.fileExists(atPath: monthDir.path) {
-                try FileManager.default.createDirectory(at: monthDir, withIntermediateDirectories: true)
+            if let entry = try saveMemoryToFile(
+                memory: memory,
+                in: backupDir,
+                monthFormatter: monthFormatter,
+                fileFormatter: fileFormatter,
+                isoFormatter: isoFormatter
+            ) {
+                metadataEntries.append(entry)
             }
-
-            // Create filename: DD_HH-mm_note.jpg
-            var filename = fileFormatter.string(from: memory.capturedAt)
-            if let note = memory.note, !note.isEmpty {
-                let sanitizedNote = note
-                    .replacingOccurrences(of: "/", with: "-")
-                    .replacingOccurrences(of: ":", with: "-")
-                    .prefix(30)
-                filename += "_\(sanitizedNote)"
-            }
-            filename += ".jpg"
-
-            let filePath = monthDir.appendingPathComponent(filename)
-            try imageData.write(to: filePath)
-
-            // Add to metadata
-            var entry: [String: Any] = [
-                "id": memory.id.uuidString,
-                "capturedAt": ISO8601DateFormatter().string(from: memory.capturedAt),
-                "createdAt": ISO8601DateFormatter().string(from: memory.createdAt),
-                "file": "\(monthFolder)/\(filename)"
-            ]
-
-            if let note = memory.note {
-                entry["note"] = note
-            }
-            if let lat = memory.latitude, let lon = memory.longitude {
-                entry["latitude"] = lat
-                entry["longitude"] = lon
-            }
-            if let locationName = memory.locationName {
-                entry["locationName"] = locationName
-            }
-
-            metadataEntries.append(entry)
         }
 
-        // Write metadata.json
+        return metadataEntries
+    }
+
+    private func saveMemoryToFile(
+        memory: Memory,
+        in backupDir: URL,
+        monthFormatter: DateFormatter,
+        fileFormatter: DateFormatter,
+        isoFormatter: ISO8601DateFormatter
+    ) throws -> [String: Any]? {
+        guard let imageData = memory.imageData else { return nil }
+
+        let monthFolder = monthFormatter.string(from: memory.capturedAt)
+        let monthDir = backupDir.appendingPathComponent(monthFolder, isDirectory: true)
+
+        if !FileManager.default.fileExists(atPath: monthDir.path) {
+            try FileManager.default.createDirectory(at: monthDir, withIntermediateDirectories: true)
+        }
+
+        var filename = fileFormatter.string(from: memory.capturedAt)
+        if let note = memory.note, !note.isEmpty {
+            let sanitizedNote = note
+                .replacingOccurrences(of: "/", with: "-")
+                .replacingOccurrences(of: ":", with: "-")
+                .prefix(30)
+            filename += "_\(sanitizedNote)"
+        }
+        filename += ".jpg"
+
+        let filePath = monthDir.appendingPathComponent(filename)
+        try imageData.write(to: filePath)
+
+        var entry: [String: Any] = [
+            "id": memory.id.uuidString,
+            "capturedAt": isoFormatter.string(from: memory.capturedAt),
+            "createdAt": isoFormatter.string(from: memory.createdAt),
+            "file": "\(monthFolder)/\(filename)"
+        ]
+
+        if let note = memory.note {
+            entry["note"] = note
+        }
+        if let lat = memory.latitude, let lon = memory.longitude {
+            entry["latitude"] = lat
+            entry["longitude"] = lon
+        }
+        if let locationName = memory.locationName {
+            entry["locationName"] = locationName
+        }
+
+        return entry
+    }
+
+    private func writeMetadataFile(entries: [[String: Any]], to backupDir: URL) throws {
         let metadata: [String: Any] = [
             "exportedAt": ISO8601DateFormatter().string(from: Date()),
             "appVersion": AppConstants.appVersion,
-            "memoriesCount": metadataEntries.count,
-            "memories": metadataEntries
+            "memoriesCount": entries.count,
+            "memories": entries
         ]
 
         let metadataData = try JSONSerialization.data(withJSONObject: metadata, options: [.prettyPrinted, .sortedKeys])
         let metadataPath = backupDir.appendingPathComponent("metadata.json")
         try metadataData.write(to: metadataPath)
+    }
 
-        // Create ZIP archive
-        let zipPath = tempDir.appendingPathComponent("\(backupName).zip")
+    private func compressToZip(directory: URL, named name: String) throws -> URL {
+        let tempDir = FileManager.default.temporaryDirectory
+        let zipPath = tempDir.appendingPathComponent("\(name).zip")
         try? FileManager.default.removeItem(at: zipPath)
 
         let coordinator = NSFileCoordinator()
         var coordinatorError: NSError?
         var archiveError: Error?
 
-        coordinator.coordinate(readingItemAt: backupDir, options: [.forUploading], error: &coordinatorError) { zipURL in
+        coordinator.coordinate(readingItemAt: directory, options: [.forUploading], error: &coordinatorError) { zipURL in
             do {
                 try FileManager.default.moveItem(at: zipURL, to: zipPath)
             } catch {
@@ -190,10 +231,11 @@ final class ExportService {
             throw error
         }
 
-        // Clean up backup directory
-        try? FileManager.default.removeItem(at: backupDir)
-
         return zipPath
+    }
+
+    private func cleanupBackupDirectory(_ directory: URL) {
+        try? FileManager.default.removeItem(at: directory)
     }
 }
 
