@@ -7,6 +7,8 @@
 
 import SwiftUI
 import AVFoundation
+import UIKit
+
 
 struct DualCaptureView: View {
     @Environment(\.modelContext) private var modelContext
@@ -18,6 +20,7 @@ struct DualCaptureView: View {
     @State private var zoomIndicatorWorkItem: DispatchWorkItem?
     @State private var mainPreviewLayer: AVCaptureVideoPreviewLayer?
     @State private var pipPreviewLayer: AVCaptureVideoPreviewLayer?
+    @State private var switchRotation: Double = 0
     
     var onImageCaptured: (UIImage) -> Void
     var onCancel: () -> Void
@@ -84,6 +87,8 @@ struct DualCaptureView: View {
                             .background(.ultraThinMaterial)
                             .clipShape(Circle())
                     }
+                    .opacity((!isDualMode && service.isSwapped) ? 0.0 : 1.0)
+                    .disabled(!isDualMode && service.isSwapped)
                     
                     if DualCaptureService.isMultiCamSupported {
                         Button {
@@ -117,19 +122,43 @@ struct DualCaptureView: View {
                         .padding(.bottom, 20)
                 }
                 
-                Button {
-                    service.capturePhoto()
-                } label: {
-                    ZStack {
-                        Circle()
-                            .stroke(.white, lineWidth: 4)
-                            .frame(width: 72, height: 72)
-                        Circle()
-                            .fill(.white)
-                            .frame(width: 60, height: 60)
+                ZStack {
+                    // Center Capture Button
+                    Button {
+                        service.capturePhoto()
+                    } label: {
+                        ZStack {
+                            Circle()
+                                .stroke(.white, lineWidth: 4)
+                                .frame(width: 72, height: 72)
+                            Circle()
+                                .fill(.white)
+                                .frame(width: 60, height: 60)
+                        }
+                    }
+                    .disabled(service.isCapturing)
+                    
+                    // Right Switch Button
+                    HStack {
+                        Spacer()
+                        Button {
+                            withAnimation(.spring(response: 0.4, dampingFraction: 0.6)) {
+                                switchRotation += 180
+                            }
+                            service.switchCameras()
+                        } label: {
+                            Image(systemName: "arrow.triangle.2.circlepath.camera.fill")
+                                .font(.title2)
+                                .foregroundStyle(.white)
+                                .padding(12)
+                                .background(.ultraThinMaterial)
+                                .clipShape(Circle())
+                                .rotationEffect(.degrees(switchRotation))
+                        }
+                        .disabled(service.isCapturing)
+                        .padding(.trailing, 40)
                     }
                 }
-                .disabled(service.isCapturing)
                 .padding(.bottom, 40)
             }
             

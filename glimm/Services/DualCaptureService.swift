@@ -133,6 +133,11 @@ class DualCaptureService: NSObject, ObservableObject {
     
     func switchCameras() {
         isSwapped.toggle()
+        if !dualModeEnabled || !DualCaptureService.isMultiCamSupported {
+            reconfigureSession()
+        } else {
+            connectPreviewLayersIfReady()
+        }
     }
     
     func toggleFlash() {
@@ -257,7 +262,7 @@ class DualCaptureService: NSObject, ObservableObject {
         if dualModeEnabled && DualCaptureService.isMultiCamSupported {
             setupMultiCamSession()
         } else {
-            setupSingleCamSession(position: .back)
+            setupSingleCamSession(position: isSwapped ? .front : .back)
         }
         
         connectPreviewLayers()
@@ -365,25 +370,37 @@ class DualCaptureService: NSObject, ObservableObject {
     }
     
     private func connectPreviewLayers() {
-        if let mainLayer = mainPreviewLayer {
-            if let oldConn = mainLayer.connection { session.removeConnection(oldConn) }
-            if let port = backVideoPort {
-                let conn = AVCaptureConnection(inputPort: port, videoPreviewLayer: mainLayer)
-                conn.automaticallyAdjustsVideoMirroring = false
-                conn.isVideoMirrored = false
-                conn.videoOrientation = .portrait
-                if session.canAddConnection(conn) { session.addConnection(conn) }
-            }
+        let mainPort: AVCaptureInput.Port?
+        let pipPort: AVCaptureInput.Port?
+        
+        if dualModeEnabled && DualCaptureService.isMultiCamSupported {
+            mainPort = isSwapped ? frontVideoPort : backVideoPort
+            pipPort = isSwapped ? backVideoPort : frontVideoPort
+        } else {
+            mainPort = backVideoPort ?? frontVideoPort
+            pipPort = nil
         }
-        if let pipLayer = pipPreviewLayer {
-            if let oldConn = pipLayer.connection { session.removeConnection(oldConn) }
-            if dualModeEnabled, let port = frontVideoPort {
-                let conn = AVCaptureConnection(inputPort: port, videoPreviewLayer: pipLayer)
-                conn.automaticallyAdjustsVideoMirroring = false
-                conn.isVideoMirrored = true
-                conn.videoOrientation = .portrait
-                if session.canAddConnection(conn) { session.addConnection(conn) }
-            }
+
+        if let mainLayer = mainPreviewLayer, let oldConn = mainLayer.connection {
+            session.removeConnection(oldConn)
+        }
+        if let pipLayer = pipPreviewLayer, let oldConn = pipLayer.connection {
+            session.removeConnection(oldConn)
+        }
+        
+        if let mainLayer = mainPreviewLayer, let port = mainPort {
+            let conn = AVCaptureConnection(inputPort: port, videoPreviewLayer: mainLayer)
+            conn.automaticallyAdjustsVideoMirroring = false
+            conn.isVideoMirrored = port.sourceDevicePosition == .front
+            conn.videoOrientation = .portrait
+            if session.canAddConnection(conn) { session.addConnection(conn) }
+        }
+        if let pipLayer = pipPreviewLayer, let port = pipPort {
+            let conn = AVCaptureConnection(inputPort: port, videoPreviewLayer: pipLayer)
+            conn.automaticallyAdjustsVideoMirroring = false
+            conn.isVideoMirrored = port.sourceDevicePosition == .front
+            conn.videoOrientation = .portrait
+            if session.canAddConnection(conn) { session.addConnection(conn) }
         }
     }
     
@@ -404,10 +421,12 @@ class DualCaptureService: NSObject, ObservableObject {
     
     private func captureSingle() {
         let settings = AVCapturePhotoSettings()
-        if backPhotoOutput.supportedFlashModes.contains(flashMode) {
+        let output = isSwapped ? frontPhotoOutput : backPhotoOutput
+        
+        if output.supportedFlashModes.contains(flashMode) {
             settings.flashMode = flashMode
         }
-        backPhotoOutput.capturePhoto(with: settings, delegate: self)
+        output.capturePhoto(with: settings, delegate: self)
     }
     
     private func captureSequential() {
@@ -469,13 +488,13 @@ class DualCaptureService: NSObject, ObservableObject {
         
         // Reset sequential fallback state if needed
         if !DualCaptureService.isMultiCamSupported {
-            // Restore back camera for next preview
+            // Restore proper camera for next preview
             sessionQueue.async { [weak self] in
                 guard let self = self else { return }
                 self.session.beginConfiguration()
                 self.session.inputs.forEach { self.session.removeInput($0) }
                 self.session.outputs.forEach { self.session.removeOutput($0) }
-                self.setupSingleCamSession(position: .back)
+                self.setupSingleCamSession(position: self.isSwapped ? .front : .back)
                 self.session.commitConfiguration()
             }
         }
