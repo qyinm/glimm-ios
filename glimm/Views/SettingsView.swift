@@ -32,8 +32,6 @@ struct SettingsView: View {
                 VStack(spacing: 24) {
                     notificationSection
 
-                    cameraSection
-
                     dataStorageSection
 
                     languageSection
@@ -164,36 +162,6 @@ struct SettingsView: View {
             }
 
             Text(String(localized: "settings.notifications.description"))
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .padding(.horizontal, 4)
-        }
-    }
-
-    private var cameraSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text(String(localized: "settings.camera"))
-                .font(.subheadline)
-                .fontWeight(.medium)
-                .foregroundStyle(.secondary)
-                .padding(.leading, 4)
-
-            GlassCard(padding: 0) {
-                VStack(spacing: 0) {
-                    settingRow {
-                        Toggle(String(localized: "settings.camera.dualCapture"), isOn: Binding(
-                            get: { settings.dualCaptureEnabled },
-                            set: { settings.dualCaptureEnabled = $0 }
-                        ))
-                        .tint(.green)
-                        .disabled(!AVCaptureMultiCamSession.isMultiCamSupported)
-                    }
-                }
-            }
-
-            Text(AVCaptureMultiCamSession.isMultiCamSupported
-                 ? String(localized: "settings.camera.dualCapture.description")
-                 : String(localized: "settings.camera.dualCapture.unsupported"))
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .padding(.horizontal, 4)
