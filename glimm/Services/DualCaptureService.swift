@@ -20,6 +20,19 @@ class DualCaptureService: NSObject, ObservableObject {
     @Published var isCapturing: Bool = false        // capture in progress
     @Published var cameraAccessGranted: Bool = false
     @Published var errorMessage: String?
+    @Published var currentZoomFactor: CGFloat = 1.0
+    @Published var focusPoint: CGPoint? = nil
+    @Published var isAdjustingFocus: Bool = false
+    @Published var exposureBias: Float = 0.0
+    
+    // MARK: - Exposure Limits
+    var minExposureBias: Float {
+        mainCameraDevice?.minExposureTargetBias ?? -8.0
+    }
+    
+    var maxExposureBias: Float {
+        mainCameraDevice?.maxExposureTargetBias ?? 8.0
+    }
     
     // MARK: - Static
     static var isMultiCamSupported: Bool {
@@ -40,6 +53,10 @@ class DualCaptureService: NSObject, ObservableObject {
     
     private var backInput: AVCaptureDeviceInput?
     private var frontInput: AVCaptureDeviceInput?
+    
+    private var mainCameraDevice: AVCaptureDevice? {
+        isSwapped ? frontInput?.device : backInput?.device
+    }
     private let backPhotoOutput = AVCapturePhotoOutput()
     private let frontPhotoOutput = AVCapturePhotoOutput()
     private let sessionQueue = DispatchQueue(label: "app.glimm.camera.session")
@@ -124,6 +141,70 @@ class DualCaptureService: NSObject, ObservableObject {
             captureMultiCam()
         } else {
             captureSequential()
+        }
+    }
+    
+    func setZoom(_ factor: CGFloat) {
+        guard let device = mainCameraDevice else { return }
+        
+        do {
+            try device.lockForConfiguration()
+            defer { device.unlockForConfiguration() }
+            
+            let clamped = max(device.minAvailableVideoZoomFactor, 
+                             min(factor, device.maxAvailableVideoZoomFactor))
+            device.videoZoomFactor = clamped
+            currentZoomFactor = clamped
+        } catch {
+            print("Failed to set zoom: \(error)")
+        }
+    }
+    
+    func focus(at point: CGPoint, in previewLayer: AVCaptureVideoPreviewLayer) {
+        guard let device = mainCameraDevice else { return }
+        
+        let devicePoint = previewLayer.captureDevicePointConverted(fromLayerPoint: point)
+        
+        do {
+            try device.lockForConfiguration()
+            defer { device.unlockForConfiguration() }
+            
+            if device.isFocusPointOfInterestSupported && device.isFocusModeSupported(.autoFocus) {
+                device.focusPointOfInterest = devicePoint
+                device.focusMode = .autoFocus
+            }
+            
+            if device.isExposurePointOfInterestSupported && device.isExposureModeSupported(.continuousAutoExposure) {
+                device.exposurePointOfInterest = devicePoint
+                device.exposureMode = .continuousAutoExposure
+            }
+            
+            focusPoint = point
+            exposureBias = 0.0
+            isAdjustingFocus = true
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
+                self?.focusPoint = nil
+                self?.isAdjustingFocus = false
+            }
+        } catch {
+            print("Failed to set focus: \(error)")
+        }
+    }
+    
+    func setExposureBias(_ bias: Float) {
+        guard let device = mainCameraDevice else { return }
+        
+        do {
+            try device.lockForConfiguration()
+            defer { device.unlockForConfiguration() }
+            
+            let clamped = max(device.minExposureTargetBias, 
+                             min(bias, device.maxExposureTargetBias))
+            device.setExposureTargetBias(clamped) { _ in }
+            exposureBias = clamped
+        } catch {
+            print("Failed to set exposure: \(error)")
         }
     }
     
@@ -346,7 +427,7 @@ class DualCaptureService: NSObject, ObservableObject {
             
             // Calculate PIP size and position (top-right, ~30% width)
             let pipWidth = main.size.width * 0.3
-            let pipHeight = pipWidth * (4.0 / 3.0)
+            let pipHeight = pipWidth * (pip.size.height / pip.size.width)
             let margin: CGFloat = 16 * (main.size.width / 390) // Scale margin relative
             let pipRect = CGRect(
                 x: main.size.width - pipWidth - margin,

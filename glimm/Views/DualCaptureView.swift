@@ -12,6 +12,13 @@ import UIKit
 struct DualCaptureView: View {
     @StateObject private var service = DualCaptureService()
     
+    // State for zoom and focus
+    @State private var baseZoomFactor: CGFloat = 1.0
+    @State private var showZoomIndicatorState: Bool = false
+    @State private var zoomIndicatorWorkItem: DispatchWorkItem?
+    @State private var mainPreviewLayer: AVCaptureVideoPreviewLayer?
+    @State private var switchRotation: Double = 0
+    
     var onImageCaptured: (UIImage) -> Void
     var onCancel: () -> Void
     
@@ -26,16 +33,38 @@ struct DualCaptureView: View {
                     session: service.session,
                     backPort: service.backVideoPort,
                     frontPort: service.frontVideoPort,
-                    isSwapped: service.isSwapped
+                    isSwapped: service.isSwapped,
+                    mainPreviewLayer: $mainPreviewLayer
                 )
                 .ignoresSafeArea()
-                // Tap gesture on PIP is handled internally by DualPreviewView or via coordinate space
-                // But DualPreviewView is a single view. The PIP logic in the prompt suggested:
-                // "Overlay a tap gesture on the PIP region"
-                // Since DualPreviewView draws both layers, we can't easily attach a SwiftUI gesture to just the PIP layer *inside* the UIViewRepresentable without passing coordinates.
-                // HOWEVER, the prompt says: "// PIP border overlay (for multi-cam, drawn in SwiftUI on top)"
-                // AND "// ... positioned at top-right"
-                // So I should draw a SwiftUI view on top of the PIP location to handle the tap.
+                .gesture(
+                    MagnificationGesture()
+                        .onChanged { value in
+                            guard !service.isCapturing else { return }
+                            service.setZoom(baseZoomFactor * value)
+                            showZoomIndicator()
+                        }
+                        .onEnded { value in
+                            baseZoomFactor = service.currentZoomFactor
+                        }
+                )
+                .simultaneousGesture(
+                    SpatialTapGesture(coordinateSpace: .local)
+                        .onEnded { value in
+                            guard !service.isCapturing,
+                                  let previewLayer = mainPreviewLayer else { return }
+                            
+                            // PIP 영역 체크 (우측 상단 120x160 영역)
+                            let pipRect = CGRect(
+                                x: UIScreen.main.bounds.width - 120 - 16,
+                                y: UIApplication.shared.windows.first?.safeAreaInsets.top ?? 47 + 60,
+                                width: 120, height: 160
+                            )
+                            guard !pipRect.contains(value.location) else { return }
+                            
+                            service.focus(at: value.location, in: previewLayer)
+                        }
+                )
             } else {
                 CameraPreviewView(session: service.session)
                     .ignoresSafeArea()
@@ -112,20 +141,57 @@ struct DualCaptureView: View {
                 
                 Spacer()
                 
-                // Capture Button
-                Button {
-                    service.capturePhoto()
-                } label: {
-                    ZStack {
-                        Circle()
-                            .stroke(.white, lineWidth: 4)
-                            .frame(width: 72, height: 72)
-                        Circle()
-                            .fill(.white)
+                // Zoom Indicator
+                if showZoomIndicatorState {
+                    Text(String(format: "%.1fx", service.currentZoomFactor))
+                        .font(.system(size: 17, weight: .semibold))
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(.ultraThinMaterial)
+                        .clipShape(Capsule())
+                        .transition(.opacity.combined(with: .scale))
+                        .padding(.bottom, 20)
+                }
+                
+                HStack {
+                    Color.clear
+                        .frame(width: 60, height: 60)
+                    
+                    Spacer()
+                    
+                    Button {
+                        service.capturePhoto()
+                    } label: {
+                        ZStack {
+                            Circle()
+                                .stroke(.white, lineWidth: 4)
+                                .frame(width: 72, height: 72)
+                            Circle()
+                                .fill(.white)
+                                .frame(width: 60, height: 60)
+                        }
+                    }
+                    .disabled(service.isCapturing)
+                    
+                    Spacer()
+                    
+                    Button {
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                            switchRotation += 180
+                        }
+                        service.switchCameras()
+                    } label: {
+                        Image(systemName: "arrow.triangle.2.circlepath.camera")
+                            .font(.system(size: 24))
+                            .foregroundStyle(.white)
                             .frame(width: 60, height: 60)
+                            .background(.ultraThinMaterial)
+                            .clipShape(Circle())
+                            .rotationEffect(.degrees(switchRotation))
                     }
                 }
-                .disabled(service.isCapturing)
+                .padding(.horizontal, 40)
                 .padding(.bottom, 40)
             }
             
@@ -141,6 +207,19 @@ struct DualCaptureView: View {
             // Access Denied View
             if !service.cameraAccessGranted {
                 cameraAccessDeniedView
+            }
+            
+            // Focus Ring Overlay
+            if let focusPoint = service.focusPoint {
+                FocusRingView(
+                    position: focusPoint,
+                    exposureBias: service.exposureBias,
+                    minExposure: service.minExposureBias,
+                    maxExposure: service.maxExposureBias,
+                    onExposureChange: { bias in
+                        service.setExposureBias(bias)
+                    }
+                )
             }
         }
         .onAppear {
@@ -200,6 +279,22 @@ struct DualCaptureView: View {
     }
 }
 
+extension DualCaptureView {
+    private func showZoomIndicator() {
+        zoomIndicatorWorkItem?.cancel()
+        withAnimation(.easeInOut(duration: 0.2)) {
+            showZoomIndicatorState = true
+        }
+        let workItem = DispatchWorkItem {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                showZoomIndicatorState = false
+            }
+        }
+        zoomIndicatorWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5, execute: workItem)
+    }
+}
+
 // MARK: - Dual Preview View (UIViewRepresentable)
 
 struct DualPreviewView: UIViewRepresentable {
@@ -207,6 +302,7 @@ struct DualPreviewView: UIViewRepresentable {
     let backPort: AVCaptureInput.Port?
     let frontPort: AVCaptureInput.Port?
     let isSwapped: Bool
+    @Binding var mainPreviewLayer: AVCaptureVideoPreviewLayer?
     
     class DualPreviewUIView: UIView {
         var mainPreviewLayer: AVCaptureVideoPreviewLayer?
@@ -233,6 +329,10 @@ struct DualPreviewView: UIViewRepresentable {
         mainLayer.setSessionWithNoConnection(session)
         view.layer.addSublayer(mainLayer)
         view.mainPreviewLayer = mainLayer
+        
+        DispatchQueue.main.async {
+            self.mainPreviewLayer = mainLayer
+        }
         
         // PIP preview layer
         let pipLayer = AVCaptureVideoPreviewLayer()
