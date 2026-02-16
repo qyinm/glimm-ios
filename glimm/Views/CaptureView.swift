@@ -20,28 +20,15 @@ struct CaptureView: View {
     @State private var selectedLatitude: Double?
     @State private var selectedLongitude: Double?
 
-    private var settings: Settings {
-        Settings.getOrCreate(in: modelContext)
-    }
-
     var body: some View {
-        Group {
-            if settings.dualCaptureEnabled {
-                DualCaptureView(
-                    onImageCaptured: { image in
-                        capturedImage = image
-                    },
-                    onCancel: {
-                        dismiss()
-                    }
-                )
-            } else {
-                ImagePicker(image: $capturedImage, sourceType: .camera, onCancel: {
-                    dismiss()
-                })
-                .ignoresSafeArea()
+        DualCaptureView(
+            onImageCaptured: { image in
+                capturedImage = image
+            },
+            onCancel: {
+                dismiss()
             }
-        }
+        )
         .sheet(isPresented: $showNoteInput) {
             noteInputSheet
         }

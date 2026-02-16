@@ -20,6 +20,13 @@ class DualCaptureService: NSObject, ObservableObject {
     @Published var isCapturing: Bool = false        // capture in progress
     @Published var cameraAccessGranted: Bool = false
     @Published var errorMessage: String?
+    var dualModeEnabled: Bool = true
+    var mainPreviewLayer: AVCaptureVideoPreviewLayer? {
+        didSet { connectPreviewLayersIfReady() }
+    }
+    var pipPreviewLayer: AVCaptureVideoPreviewLayer? {
+        didSet { connectPreviewLayersIfReady() }
+    }
     @Published var currentZoomFactor: CGFloat = 1.0
     @Published var focusPoint: CGPoint? = nil
     @Published var isAdjustingFocus: Bool = false
@@ -112,6 +119,18 @@ class DualCaptureService: NSObject, ObservableObject {
         }
     }
     
+    func reconfigureSession() {
+        sessionQueue.async { [weak self] in
+            guard let self = self else { return }
+            if self.session.isRunning { self.session.stopRunning() }
+            self.setupSession()
+            self.session.startRunning()
+            Task { @MainActor in
+                self.isSessionRunning = true
+            }
+        }
+    }
+    
     func switchCameras() {
         isSwapped.toggle()
     }
@@ -137,10 +156,12 @@ class DualCaptureService: NSObject, ObservableObject {
         backCapturedImage = nil
         frontCapturedImage = nil
         
-        if DualCaptureService.isMultiCamSupported {
+        if dualModeEnabled && DualCaptureService.isMultiCamSupported {
             captureMultiCam()
-        } else {
+        } else if dualModeEnabled {
             captureSequential()
+        } else {
+            captureSingle()
         }
     }
     
@@ -230,12 +251,16 @@ class DualCaptureService: NSObject, ObservableObject {
         // Remove existing inputs/outputs
         session.inputs.forEach { session.removeInput($0) }
         session.outputs.forEach { session.removeOutput($0) }
+        backInput = nil
+        frontInput = nil
         
-        if DualCaptureService.isMultiCamSupported {
+        if dualModeEnabled && DualCaptureService.isMultiCamSupported {
             setupMultiCamSession()
         } else {
             setupSingleCamSession(position: .back)
         }
+        
+        connectPreviewLayers()
     }
     
     private func setupMultiCamSession() {
@@ -300,7 +325,7 @@ class DualCaptureService: NSObject, ObservableObject {
         do {
             let input = try AVCaptureDeviceInput(device: camera)
             if session.canAddInput(input) {
-                session.addInput(input)
+                session.addInputWithNoConnections(input)
                 if position == .back {
                     self.backInput = input
                 } else {
@@ -310,23 +335,54 @@ class DualCaptureService: NSObject, ObservableObject {
             
             let output = position == .back ? backPhotoOutput : frontPhotoOutput
             if session.canAddOutput(output) {
-                session.addOutput(output)
+                session.addOutputWithNoConnections(output)
             }
             
-            if position == .front {
-                // Manually mirror if needed, though default usually works for single session preview.
-                // For photo capture, we might need to handle mirroring in the delegate if not handled here.
-             if let connection = output.connection(with: .video) {
-                      if connection.isVideoMirroringSupported {
-                          connection.automaticallyAdjustsVideoMirroring = false
-                          connection.isVideoMirrored = true
-                      }
-                  }
+            if let port = input.ports(for: .video, sourceDeviceType: camera.deviceType, sourceDevicePosition: position).first {
+                let connection = AVCaptureConnection(inputPorts: [port], output: output)
+                if position == .front {
+                    connection.automaticallyAdjustsVideoMirroring = false
+                    connection.isVideoMirrored = true
+                }
+                if session.canAddConnection(connection) {
+                    session.addConnection(connection)
+                }
             }
-            
         } catch {
             Task { @MainActor in
                 self.errorMessage = CaptureError.sessionConfigFailed.localizedDescription
+            }
+        }
+    }
+    
+    private func connectPreviewLayersIfReady() {
+        sessionQueue.async { [weak self] in
+            guard let self = self else { return }
+            self.session.beginConfiguration()
+            self.connectPreviewLayers()
+            self.session.commitConfiguration()
+        }
+    }
+    
+    private func connectPreviewLayers() {
+        if let mainLayer = mainPreviewLayer {
+            if let oldConn = mainLayer.connection { session.removeConnection(oldConn) }
+            if let port = backVideoPort {
+                let conn = AVCaptureConnection(inputPort: port, videoPreviewLayer: mainLayer)
+                conn.automaticallyAdjustsVideoMirroring = false
+                conn.isVideoMirrored = false
+                conn.videoOrientation = .portrait
+                if session.canAddConnection(conn) { session.addConnection(conn) }
+            }
+        }
+        if let pipLayer = pipPreviewLayer {
+            if let oldConn = pipLayer.connection { session.removeConnection(oldConn) }
+            if dualModeEnabled, let port = frontVideoPort {
+                let conn = AVCaptureConnection(inputPort: port, videoPreviewLayer: pipLayer)
+                conn.automaticallyAdjustsVideoMirroring = false
+                conn.isVideoMirrored = true
+                conn.videoOrientation = .portrait
+                if session.canAddConnection(conn) { session.addConnection(conn) }
             }
         }
     }
@@ -344,6 +400,14 @@ class DualCaptureService: NSObject, ObservableObject {
         
         backPhotoOutput.capturePhoto(with: backSettings, delegate: self)
         frontPhotoOutput.capturePhoto(with: frontSettings, delegate: self)
+    }
+    
+    private func captureSingle() {
+        let settings = AVCapturePhotoSettings()
+        if backPhotoOutput.supportedFlashModes.contains(flashMode) {
+            settings.flashMode = flashMode
+        }
+        backPhotoOutput.capturePhoto(with: settings, delegate: self)
     }
     
     private func captureSequential() {
@@ -465,7 +529,11 @@ extension DualCaptureService: AVCapturePhotoCaptureDelegate {
         // UIGraphicsImageRenderer respects UIImage orientation).
         
         Task { @MainActor in
-            if output == self.backPhotoOutput {
+            if !self.dualModeEnabled {
+                // Single mode: use photo directly
+                self.capturedImage = image
+                self.isCapturing = false
+            } else if output == self.backPhotoOutput {
                 self.backCapturedImage = image
                 
                 if !DualCaptureService.isMultiCamSupported {
