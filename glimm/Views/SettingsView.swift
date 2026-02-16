@@ -330,6 +330,9 @@ struct SettingsView: View {
                             Text(String(localized: "settings.language.system")).tag("system")
                             Text("English").tag("en")
                             Text("한국어").tag("ko")
+                            Text("日本語").tag("ja")
+                            Text("Français").tag("fr")
+                            Text("Deutsch").tag("de")
                         }
                         .onChange(of: appLanguage) { _, newValue in
                             if newValue == "system" {
