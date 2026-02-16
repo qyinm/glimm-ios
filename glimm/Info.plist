@@ -4,6 +4,8 @@
 <dict>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSCameraUsageDescription</key>
+	<string>glimm needs camera access to capture your moments.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>glimm uses your location to tag where your memories were captured.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

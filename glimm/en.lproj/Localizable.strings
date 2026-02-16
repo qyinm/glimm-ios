@@ -94,3 +94,18 @@
 "notification.message6" = "Pause and capture";
 "notification.message7" = "Keep this moment";
 "notification.message8" = "What's around you?";
+
+// MARK: - Camera Settings
+"settings.camera" = "Camera";
+"settings.camera.dualCapture" = "Dual Capture";
+"settings.camera.dualCapture.description" = "Capture photos with both front and back cameras simultaneously, BeReal-style.";
+"settings.camera.dualCapture.unsupported" = "Dual capture is not supported on this device.";
+
+// MARK: - Dual Capture
+"capture.dual.flash.on" = "Flash On";
+"capture.dual.flash.off" = "Flash Off";
+"capture.dual.flash.auto" = "Flash Auto";
+"capture.dual.capturing" = "Capturing...";
+"capture.dual.cameraAccess.title" = "Camera Access Required";
+"capture.dual.cameraAccess.message" = "Please allow camera access in Settings to use dual capture.";
+"capture.dual.cameraAccess.openSettings" = "Open Settings";

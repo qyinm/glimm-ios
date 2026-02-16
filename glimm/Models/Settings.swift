@@ -13,6 +13,7 @@ final class Settings {
     var notifyEnd: Date = Calendar.current.date(from: DateComponents(hour: 21, minute: 0)) ?? Date()
     var notifyFrequency: Int = 3
     var notifyEnabled: Bool = true
+    var dualCaptureEnabled: Bool = false
 
     init() {}
 
