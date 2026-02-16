@@ -1,0 +1,111 @@
+// MARK: - Home
+"home.empty.title" = "Noch keine Erinnerungen";
+"home.empty.subtitle" = "Tippe auf +, um deinen\nersten Moment festzuhalten";
+
+// MARK: - Calendar
+"calendar.title" = "Kalender";
+"calendar.weekday.sun" = "So";
+"calendar.weekday.mon" = "Mo";
+"calendar.weekday.tue" = "Di";
+"calendar.weekday.wed" = "Mi";
+"calendar.weekday.thu" = "Do";
+"calendar.weekday.fri" = "Fr";
+"calendar.weekday.sat" = "Sa";
+"calendar.done" = "Fertig";
+
+// MARK: - Capture
+"capture.note.title" = "Notiz hinzufügen";
+"capture.note.placeholder" = "Was passiert gerade?";
+"capture.location.add" = "Ort hinzufügen";
+
+// MARK: - Common
+"common.cancel" = "Abbrechen";
+"common.save" = "Speichern";
+"common.done" = "Fertig";
+
+// MARK: - Memory Detail
+"detail.share" = "Teilen";
+"detail.editNote" = "Notiz bearbeiten";
+"detail.editLocation" = "Ort bearbeiten";
+"detail.delete" = "Löschen";
+"detail.deleteMemory" = "Erinnerung löschen";
+"detail.deleteWarning" = "Dies kann nicht rückgängig gemacht werden.";
+"detail.editNote.title" = "Notiz bearbeiten";
+"detail.editNote.placeholder" = "Was passiert gerade?";
+"detail.time.at" = "um";
+
+// MARK: - Location Picker
+"location.tab.search" = "Suche";
+"location.tab.map" = "Karte";
+"location.title" = "Ort";
+"location.selected" = "Ausgewählt";
+"location.searchResults" = "Suchergebnisse";
+"location.remove" = "Ort entfernen";
+"location.searchPrompt" = "Ort suchen";
+"location.finding" = "Ort wird gesucht...";
+"location.map.changeHint" = "Tippe auf die Karte, um den Ort zu ändern";
+"location.map.selectHint" = "Tippe auf die Karte, um einen Ort auszuwählen";
+
+// MARK: - Settings
+"settings.title" = "Einstellungen";
+"settings.notifications" = "Benachrichtigungen";
+"settings.notifications.enable" = "Benachrichtigungen aktivieren";
+"settings.notifications.startTime" = "Startzeit";
+"settings.notifications.endTime" = "Endzeit";
+"settings.notifications.frequency %lld" = "Häufigkeit: %lld pro Tag";
+"settings.notifications.description" = "glimm sendet zufällige Erinnerungen während deiner aktiven Stunden, um Momente festzuhalten.";
+"settings.dataStorage" = "Datenspeicher";
+"settings.dataStorage.warning" = "Deine Erinnerungen werden lokal auf diesem Gerät gespeichert. Das Löschen der App entfernt alle deine Daten dauerhaft.";
+
+// MARK: - Export
+"settings.export" = "Exportieren";
+"settings.export.photos" = "In Fotoalbum speichern";
+"settings.export.photos.description" = "Alle Fotos in ein 'glimm'-Album speichern";
+"settings.export.zip" = "Backup erstellen";
+"settings.export.zip.description" = "Fotos und Notizen als ZIP-Datei exportieren";
+"settings.export.inProgress" = "Wird exportiert...";
+"settings.export.success" = "Export abgeschlossen";
+"settings.export.success.photos %lld" = "%lld Fotos im Album gespeichert";
+"settings.export.success.zip" = "Backup erfolgreich erstellt";
+"settings.export.error" = "Export fehlgeschlagen";
+"settings.export.error.photosAccess" = "Fotozugriff verweigert. Bitte erlaube den Zugriff in den Einstellungen.";
+"settings.export.error.albumCreation" = "Album konnte nicht erstellt werden";
+"settings.export.error.archiveCreation" = "Backup-Archiv konnte nicht erstellt werden";
+"settings.export.noMemories" = "Keine Erinnerungen zum Exportieren";
+"settings.language" = "Sprache";
+"settings.language.system" = "Systemstandard";
+"settings.language.description" = "Eine Sprachänderung kann einen Neustart der App erfordern.";
+"settings.about" = "Über";
+"settings.about.version" = "Version";
+"settings.about.privacy" = "Datenschutzrichtlinie";
+"settings.about.terms" = "Nutzungsbedingungen";
+
+// MARK: - Main Tab
+"tab.timeline" = "Zeitleiste";
+"tab.calendar" = "Kalender";
+"tab.settings" = "Einstellungen";
+
+// MARK: - Notifications
+"notification.message1" = "Was passiert gerade?";
+"notification.message2" = "Halte diesen Moment fest!";
+"notification.message3" = "Was machst du gerade?";
+"notification.message4" = "Zeit für eine Erinnerung";
+"notification.message5" = "Wie sieht deine Welt gerade aus?";
+"notification.message6" = "Kurz innehalten und festhalten";
+"notification.message7" = "Bewahre diesen Moment";
+"notification.message8" = "Was ist um dich herum?";
+
+// MARK: - Camera Settings
+"settings.camera" = "Kamera";
+"settings.camera.dualCapture" = "Dual-Aufnahme";
+"settings.camera.dualCapture.description" = "Nimm Fotos gleichzeitig mit Front- und Rückkamera auf, im BeReal-Stil.";
+"settings.camera.dualCapture.unsupported" = "Dual-Aufnahme wird auf diesem Gerät nicht unterstützt.";
+
+// MARK: - Dual Capture
+"capture.dual.flash.on" = "Blitz an";
+"capture.dual.flash.off" = "Blitz aus";
+"capture.dual.flash.auto" = "Blitz automatisch";
+"capture.dual.capturing" = "Wird aufgenommen...";
+"capture.dual.cameraAccess.title" = "Kamerazugriff erforderlich";
+"capture.dual.cameraAccess.message" = "Bitte erlaube den Kamerazugriff in den Einstellungen, um die Dual-Aufnahme zu verwenden.";
+"capture.dual.cameraAccess.openSettings" = "Einstellungen öffnen";

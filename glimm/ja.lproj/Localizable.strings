@@ -1,0 +1,111 @@
+// MARK: - Home
+"home.empty.title" = "まだ思い出がありません";
+"home.empty.subtitle" = "+ ボタンをタップして\n最初の瞬間を記録しましょう";
+
+// MARK: - Calendar
+"calendar.title" = "カレンダー";
+"calendar.weekday.sun" = "日";
+"calendar.weekday.mon" = "月";
+"calendar.weekday.tue" = "火";
+"calendar.weekday.wed" = "水";
+"calendar.weekday.thu" = "木";
+"calendar.weekday.fri" = "金";
+"calendar.weekday.sat" = "土";
+"calendar.done" = "完了";
+
+// MARK: - Capture
+"capture.note.title" = "メモを追加";
+"capture.note.placeholder" = "今、何が起きていますか？";
+"capture.location.add" = "位置情報を追加";
+
+// MARK: - Common
+"common.cancel" = "キャンセル";
+"common.save" = "保存";
+"common.done" = "完了";
+
+// MARK: - Memory Detail
+"detail.share" = "共有";
+"detail.editNote" = "メモを編集";
+"detail.editLocation" = "位置情報を編集";
+"detail.delete" = "削除";
+"detail.deleteMemory" = "思い出を削除";
+"detail.deleteWarning" = "この操作は取り消せません。";
+"detail.editNote.title" = "メモを編集";
+"detail.editNote.placeholder" = "何が起きていますか？";
+"detail.time.at" = " ";
+
+// MARK: - Location Picker
+"location.tab.search" = "検索";
+"location.tab.map" = "マップ";
+"location.title" = "位置情報";
+"location.selected" = "選択済み";
+"location.searchResults" = "検索結果";
+"location.remove" = "位置情報を削除";
+"location.searchPrompt" = "場所を検索";
+"location.finding" = "位置情報を取得中...";
+"location.map.changeHint" = "マップをタップして位置を変更";
+"location.map.selectHint" = "マップをタップして位置を選択";
+
+// MARK: - Settings
+"settings.title" = "設定";
+"settings.notifications" = "通知";
+"settings.notifications.enable" = "通知を有効にする";
+"settings.notifications.startTime" = "開始時間";
+"settings.notifications.endTime" = "終了時間";
+"settings.notifications.frequency %lld" = "頻度：1日%lld回";
+"settings.notifications.description" = "glimmはあなたの活動時間中にランダムな通知を送り、瞬間の記録を促します。";
+"settings.dataStorage" = "データ保存";
+"settings.dataStorage.warning" = "思い出はこのデバイスにローカル保存されています。アプリを削除すると、すべてのデータが完全に失われます。";
+
+// MARK: - Export
+"settings.export" = "エクスポート";
+"settings.export.photos" = "写真アルバムに保存";
+"settings.export.photos.description" = "すべての写真を「glimm」アルバムに保存";
+"settings.export.zip" = "バックアップを作成";
+"settings.export.zip.description" = "写真とメモをZIPファイルで書き出し";
+"settings.export.inProgress" = "エクスポート中...";
+"settings.export.success" = "エクスポート完了";
+"settings.export.success.photos %lld" = "%lld枚の写真をアルバムに保存しました";
+"settings.export.success.zip" = "バックアップが作成されました";
+"settings.export.error" = "エクスポート失敗";
+"settings.export.error.photosAccess" = "写真へのアクセスが拒否されました。設定からアクセスを許可してください。";
+"settings.export.error.albumCreation" = "アルバムの作成に失敗しました";
+"settings.export.error.archiveCreation" = "バックアップファイルの作成に失敗しました";
+"settings.export.noMemories" = "エクスポートする思い出がありません";
+"settings.language" = "言語";
+"settings.language.system" = "システム設定";
+"settings.language.description" = "言語を変更するとアプリの再起動が必要になる場合があります。";
+"settings.about" = "アプリについて";
+"settings.about.version" = "バージョン";
+"settings.about.privacy" = "プライバシーポリシー";
+"settings.about.terms" = "利用規約";
+
+// MARK: - Main Tab
+"tab.timeline" = "タイムライン";
+"tab.calendar" = "カレンダー";
+"tab.settings" = "設定";
+
+// MARK: - Notifications
+"notification.message1" = "今、何してる？";
+"notification.message2" = "この瞬間を残そう！";
+"notification.message3" = "何してるところ？";
+"notification.message4" = "思い出をつくろう";
+"notification.message5" = "今の景色はどんな感じ？";
+"notification.message6" = "ちょっと手を止めて、パシャリ";
+"notification.message7" = "この瞬間を残しておこう";
+"notification.message8" = "周りに何がある？";
+
+// MARK: - Camera Settings
+"settings.camera" = "カメラ";
+"settings.camera.dualCapture" = "デュアルキャプチャ";
+"settings.camera.dualCapture.description" = "BeRealのように前面と背面カメラで同時に撮影します。";
+"settings.camera.dualCapture.unsupported" = "このデバイスはデュアルキャプチャに対応していません。";
+
+// MARK: - Dual Capture
+"capture.dual.flash.on" = "フラッシュ オン";
+"capture.dual.flash.off" = "フラッシュ オフ";
+"capture.dual.flash.auto" = "フラッシュ 自動";
+"capture.dual.capturing" = "撮影中...";
+"capture.dual.cameraAccess.title" = "カメラへのアクセスが必要です";
+"capture.dual.cameraAccess.message" = "デュアルキャプチャを使用するには、設定からカメラへのアクセスを許可してください。";
+"capture.dual.cameraAccess.openSettings" = "設定を開く";

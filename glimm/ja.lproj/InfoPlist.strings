@@ -1,0 +1,3 @@
+"NSCameraUsageDescription" = "glimmは瞬間を撮影するためにカメラへのアクセスが必要です。";
+"NSLocationWhenInUseUsageDescription" = "glimmは思い出が記録された場所をタグ付けするために位置情報を使用します。";
+"NSPhotoLibraryAddUsageDescription" = "glimmはバックアップのために写真をアルバムに保存する権限が必要です。";

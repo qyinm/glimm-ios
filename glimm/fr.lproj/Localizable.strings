@@ -1,0 +1,111 @@
+// MARK: - Home
+"home.empty.title" = "Aucun souvenir pour le moment";
+"home.empty.subtitle" = "Appuie sur le bouton + pour capturer\nton premier instant";
+
+// MARK: - Calendar
+"calendar.title" = "Calendrier";
+"calendar.weekday.sun" = "Dim";
+"calendar.weekday.mon" = "Lun";
+"calendar.weekday.tue" = "Mar";
+"calendar.weekday.wed" = "Mer";
+"calendar.weekday.thu" = "Jeu";
+"calendar.weekday.fri" = "Ven";
+"calendar.weekday.sat" = "Sam";
+"calendar.done" = "Terminé";
+
+// MARK: - Capture
+"capture.note.title" = "Ajouter une note";
+"capture.note.placeholder" = "Que se passe-t-il en ce moment ?";
+"capture.location.add" = "Ajouter un lieu";
+
+// MARK: - Common
+"common.cancel" = "Annuler";
+"common.save" = "Enregistrer";
+"common.done" = "Terminé";
+
+// MARK: - Memory Detail
+"detail.share" = "Partager";
+"detail.editNote" = "Modifier la note";
+"detail.editLocation" = "Modifier le lieu";
+"detail.delete" = "Supprimer";
+"detail.deleteMemory" = "Supprimer le souvenir";
+"detail.deleteWarning" = "Cette action est irréversible.";
+"detail.editNote.title" = "Modifier la note";
+"detail.editNote.placeholder" = "Que se passe-t-il ?";
+"detail.time.at" = "à";
+
+// MARK: - Location Picker
+"location.tab.search" = "Rechercher";
+"location.tab.map" = "Carte";
+"location.title" = "Lieu";
+"location.selected" = "Sélectionné";
+"location.searchResults" = "Résultats de recherche";
+"location.remove" = "Supprimer le lieu";
+"location.searchPrompt" = "Rechercher un lieu";
+"location.finding" = "Localisation en cours...";
+"location.map.changeHint" = "Touche n'importe où sur la carte pour changer le lieu";
+"location.map.selectHint" = "Touche la carte pour sélectionner un lieu";
+
+// MARK: - Settings
+"settings.title" = "Réglages";
+"settings.notifications" = "Notifications";
+"settings.notifications.enable" = "Activer les notifications";
+"settings.notifications.startTime" = "Heure de début";
+"settings.notifications.endTime" = "Heure de fin";
+"settings.notifications.frequency %lld" = "Fréquence : %lld par jour";
+"settings.notifications.description" = "glimm t'enverra des rappels aléatoires pendant tes heures d'activité pour capturer des instants.";
+"settings.dataStorage" = "Stockage des données";
+"settings.dataStorage.warning" = "Tes souvenirs sont stockés localement sur cet appareil. Supprimer l'app supprimera définitivement toutes tes données.";
+
+// MARK: - Export
+"settings.export" = "Exporter";
+"settings.export.photos" = "Enregistrer dans l'album photos";
+"settings.export.photos.description" = "Enregistrer toutes les photos dans un album 'glimm'";
+"settings.export.zip" = "Créer une sauvegarde";
+"settings.export.zip.description" = "Exporter les photos et notes en fichier ZIP";
+"settings.export.inProgress" = "Exportation en cours...";
+"settings.export.success" = "Exportation terminée";
+"settings.export.success.photos %lld" = "%lld photos enregistrées dans l'album";
+"settings.export.success.zip" = "Sauvegarde créée avec succès";
+"settings.export.error" = "Échec de l'exportation";
+"settings.export.error.photosAccess" = "Accès aux photos refusé. Autorise l'accès dans les Réglages.";
+"settings.export.error.albumCreation" = "Impossible de créer l'album";
+"settings.export.error.archiveCreation" = "Impossible de créer l'archive de sauvegarde";
+"settings.export.noMemories" = "Aucun souvenir à exporter";
+"settings.language" = "Langue";
+"settings.language.system" = "Par défaut du système";
+"settings.language.description" = "Le changement de langue peut nécessiter un redémarrage de l'app.";
+"settings.about" = "À propos";
+"settings.about.version" = "Version";
+"settings.about.privacy" = "Politique de confidentialité";
+"settings.about.terms" = "Conditions d'utilisation";
+
+// MARK: - Main Tab
+"tab.timeline" = "Journal";
+"tab.calendar" = "Calendrier";
+"tab.settings" = "Réglages";
+
+// MARK: - Notifications
+"notification.message1" = "Qu'est-ce qui se passe en ce moment ?";
+"notification.message2" = "Capture cet instant !";
+"notification.message3" = "Tu fais quoi là ?";
+"notification.message4" = "C'est le moment de créer un souvenir";
+"notification.message5" = "À quoi ressemble ton monde ?";
+"notification.message6" = "Fais une pause et capture";
+"notification.message7" = "Garde cet instant";
+"notification.message8" = "Qu'est-ce qu'il y a autour de toi ?";
+
+// MARK: - Camera Settings
+"settings.camera" = "Appareil photo";
+"settings.camera.dualCapture" = "Double capture";
+"settings.camera.dualCapture.description" = "Prends des photos avec les caméras avant et arrière simultanément, à la BeReal.";
+"settings.camera.dualCapture.unsupported" = "La double capture n'est pas prise en charge sur cet appareil.";
+
+// MARK: - Dual Capture
+"capture.dual.flash.on" = "Flash activé";
+"capture.dual.flash.off" = "Flash désactivé";
+"capture.dual.flash.auto" = "Flash auto";
+"capture.dual.capturing" = "Capture en cours...";
+"capture.dual.cameraAccess.title" = "Accès à l'appareil photo requis";
+"capture.dual.cameraAccess.message" = "Autorise l'accès à l'appareil photo dans les Réglages pour utiliser la double capture.";
+"capture.dual.cameraAccess.openSettings" = "Ouvrir les Réglages";
