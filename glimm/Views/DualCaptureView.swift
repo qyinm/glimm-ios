@@ -221,17 +221,17 @@ struct DualCaptureView: View {
                     .font(.system(size: 48))
                     .foregroundStyle(.white.opacity(0.6))
                 
-                Text("Camera Access Required")
+                Text(String(localized: "capture.dual.cameraAccess.title"))
                     .font(.title2)
                     .fontWeight(.semibold)
                     .foregroundStyle(.white)
                 
-                Text("Please enable camera access in Settings to capture memories.")
+                Text(String(localized: "capture.dual.cameraAccess.message"))
                     .font(.body)
                     .foregroundStyle(.white.opacity(0.7))
                     .multilineTextAlignment(.center)
                 
-                Button("Open Settings") {
+                Button(String(localized: "capture.dual.cameraAccess.openSettings")) {
                     if let url = URL(string: UIApplication.openSettingsURLString) {
                         UIApplication.shared.open(url)
                     }
