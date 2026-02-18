@@ -109,3 +109,27 @@
 "capture.dual.cameraAccess.title" = "Accès à l'appareil photo requis";
 "capture.dual.cameraAccess.message" = "Autorise l'accès à l'appareil photo dans les Réglages pour utiliser la double capture.";
 "capture.dual.cameraAccess.openSettings" = "Ouvrir les Réglages";
+
+// MARK: - Onboarding
+"onboarding.skip" = "Passer";
+"onboarding.next" = "Suivant";
+"onboarding.start" = "Commencer";
+"onboarding.welcome.tagline" = "Ton archive authentique du quotidien";
+"onboarding.howItWorks.title" = "Comment ça marche";
+"onboarding.howItWorks.step1.title" = "Notifications aléatoires";
+"onboarding.howItWorks.step1.description" = "Reçois des rappels surprises au fil de ta journée";
+"onboarding.howItWorks.step2.title" = "Capture rapide";
+"onboarding.howItWorks.step2.description" = "Prends en photo ce que tu fais en ce moment";
+"onboarding.howItWorks.step3.title" = "Ton journal";
+"onboarding.howItWorks.step3.description" = "Construis une archive authentique de ta vie quotidienne";
+"onboarding.private.title" = "Ton archive privée";
+"onboarding.private.point1" = "Stocké sur ton appareil";
+"onboarding.private.point2" = "Synchronisé via iCloud";
+"onboarding.private.point3" = "Pas de réseau social, juste toi";
+"onboarding.setup.title" = "Configurer glimm";
+"onboarding.setup.permissions" = "Autorisations";
+"onboarding.setup.notifications" = "Notifications";
+"onboarding.setup.notifications.description" = "Pour t'envoyer des rappels de moments";
+"onboarding.setup.camera" = "Appareil photo";
+"onboarding.setup.camera.description" = "Pour capturer tes moments";
+"onboarding.setup.schedule" = "Horaire des notifications";

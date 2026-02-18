@@ -109,3 +109,27 @@
 "capture.dual.cameraAccess.title" = "カメラへのアクセスが必要です";
 "capture.dual.cameraAccess.message" = "デュアルキャプチャを使用するには、設定からカメラへのアクセスを許可してください。";
 "capture.dual.cameraAccess.openSettings" = "設定を開く";
+
+// MARK: - Onboarding
+"onboarding.skip" = "スキップ";
+"onboarding.next" = "次へ";
+"onboarding.start" = "はじめる";
+"onboarding.welcome.tagline" = "あなたのリアルな日常アーカイブ";
+"onboarding.howItWorks.title" = "使い方";
+"onboarding.howItWorks.step1.title" = "ランダム通知";
+"onboarding.howItWorks.step1.description" = "1日の中でサプライズ通知が届きます";
+"onboarding.howItWorks.step2.title" = "すぐ撮影";
+"onboarding.howItWorks.step2.description" = "今していることをパシャリ";
+"onboarding.howItWorks.step3.title" = "タイムライン";
+"onboarding.howItWorks.step3.description" = "リアルな日常のアーカイブを作ろう";
+"onboarding.private.title" = "あなただけのアーカイブ";
+"onboarding.private.point1" = "デバイスに保存";
+"onboarding.private.point2" = "iCloudで同期";
+"onboarding.private.point3" = "SNS機能なし、あなただけのために";
+"onboarding.setup.title" = "glimmの設定";
+"onboarding.setup.permissions" = "権限";
+"onboarding.setup.notifications" = "通知";
+"onboarding.setup.notifications.description" = "瞬間をお知らせするために";
+"onboarding.setup.camera" = "カメラ";
+"onboarding.setup.camera.description" = "瞬間を撮影するために";
+"onboarding.setup.schedule" = "通知スケジュール";

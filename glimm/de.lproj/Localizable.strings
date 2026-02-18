@@ -109,3 +109,27 @@
 "capture.dual.cameraAccess.title" = "Kamerazugriff erforderlich";
 "capture.dual.cameraAccess.message" = "Bitte erlaube den Kamerazugriff in den Einstellungen, um die Dual-Aufnahme zu verwenden.";
 "capture.dual.cameraAccess.openSettings" = "Einstellungen öffnen";
+
+// MARK: - Onboarding
+"onboarding.skip" = "Überspringen";
+"onboarding.next" = "Weiter";
+"onboarding.start" = "Los geht's";
+"onboarding.welcome.tagline" = "Dein authentisches Alltagsarchiv";
+"onboarding.howItWorks.title" = "So funktioniert's";
+"onboarding.howItWorks.step1.title" = "Zufällige Benachrichtigungen";
+"onboarding.howItWorks.step1.description" = "Erhalte überraschende Erinnerungen im Laufe des Tages";
+"onboarding.howItWorks.step2.title" = "Schnell fotografieren";
+"onboarding.howItWorks.step2.description" = "Fotografiere, was du gerade machst";
+"onboarding.howItWorks.step3.title" = "Deine Zeitleiste";
+"onboarding.howItWorks.step3.description" = "Erstelle ein authentisches Archiv deines Alltags";
+"onboarding.private.title" = "Dein privates Archiv";
+"onboarding.private.point1" = "Auf deinem Gerät gespeichert";
+"onboarding.private.point2" = "Über iCloud synchronisiert";
+"onboarding.private.point3" = "Keine Social-Funktionen, nur für dich";
+"onboarding.setup.title" = "glimm einrichten";
+"onboarding.setup.permissions" = "Berechtigungen";
+"onboarding.setup.notifications" = "Benachrichtigungen";
+"onboarding.setup.notifications.description" = "Um dir Moment-Erinnerungen zu senden";
+"onboarding.setup.camera" = "Kamera";
+"onboarding.setup.camera.description" = "Um deine Momente festzuhalten";
+"onboarding.setup.schedule" = "Benachrichtigungsplan";

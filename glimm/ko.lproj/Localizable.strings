@@ -109,3 +109,27 @@
 "capture.dual.cameraAccess.title" = "카메라 접근 필요";
 "capture.dual.cameraAccess.message" = "듀얼 캡처를 사용하려면 설정에서 카메라 접근을 허용해주세요.";
 "capture.dual.cameraAccess.openSettings" = "설정 열기";
+
+// MARK: - Onboarding
+"onboarding.skip" = "건너뛰기";
+"onboarding.next" = "다음";
+"onboarding.start" = "시작하기";
+"onboarding.welcome.tagline" = "당신의 진짜 일상 아카이브";
+"onboarding.howItWorks.title" = "사용 방법";
+"onboarding.howItWorks.step1.title" = "랜덤 알림";
+"onboarding.howItWorks.step1.description" = "하루 중 깜짝 알림을 받아요";
+"onboarding.howItWorks.step2.title" = "빠른 촬영";
+"onboarding.howItWorks.step2.description" = "지금 하고 있는 것을 사진으로 찍으세요";
+"onboarding.howItWorks.step3.title" = "나의 타임라인";
+"onboarding.howItWorks.step3.description" = "진짜 일상의 아카이브를 만들어요";
+"onboarding.private.title" = "나만의 프라이빗 아카이브";
+"onboarding.private.point1" = "기기에 저장";
+"onboarding.private.point2" = "iCloud로 동기화";
+"onboarding.private.point3" = "소셜 기능 없이, 오직 나만을 위해";
+"onboarding.setup.title" = "glimm 설정";
+"onboarding.setup.permissions" = "권한";
+"onboarding.setup.notifications" = "알림";
+"onboarding.setup.notifications.description" = "순간을 기록하라는 알림을 보내기 위해";
+"onboarding.setup.camera" = "카메라";
+"onboarding.setup.camera.description" = "순간을 촬영하기 위해";
+"onboarding.setup.schedule" = "알림 일정";
