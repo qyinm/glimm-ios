@@ -10,9 +10,11 @@ struct OnboardingWelcomePage: View {
         VStack(spacing: 24) {
             Spacer()
 
-            Image(systemName: "sparkles")
-                .font(.system(size: 64))
-                .foregroundStyle(.primary)
+            Image("AppIconImage")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 120, height: 120)
+                .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
 
             Text("glimm")
                 .font(.system(size: 48, weight: .bold, design: .default))
