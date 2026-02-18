@@ -126,7 +126,7 @@
 "onboarding.private.point1" = "Auf deinem Gerät gespeichert";
 "onboarding.private.point2" = "Über iCloud synchronisiert";
 "onboarding.private.point3" = "Keine Social-Funktionen, nur für dich";
-"onboarding.setup.title" = "glimm einrichten";
+"onboarding.setup.title" = "Einstellungen";
 "onboarding.setup.permissions" = "Berechtigungen";
 "onboarding.setup.notifications" = "Benachrichtigungen";
 "onboarding.setup.notifications.description" = "Um dir Moment-Erinnerungen zu senden";

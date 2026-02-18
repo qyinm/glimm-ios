@@ -126,7 +126,7 @@
 "onboarding.private.point1" = "기기에 저장";
 "onboarding.private.point2" = "iCloud로 동기화";
 "onboarding.private.point3" = "소셜 기능 없이, 오직 나만을 위해";
-"onboarding.setup.title" = "glimm 설정";
+"onboarding.setup.title" = "설정";
 "onboarding.setup.permissions" = "권한";
 "onboarding.setup.notifications" = "알림";
 "onboarding.setup.notifications.description" = "순간을 기록하라는 알림을 보내기 위해";

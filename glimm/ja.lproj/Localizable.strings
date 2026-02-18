@@ -126,7 +126,7 @@
 "onboarding.private.point1" = "デバイスに保存";
 "onboarding.private.point2" = "iCloudで同期";
 "onboarding.private.point3" = "SNS機能なし、あなただけのために";
-"onboarding.setup.title" = "glimmの設定";
+"onboarding.setup.title" = "設定";
 "onboarding.setup.permissions" = "権限";
 "onboarding.setup.notifications" = "通知";
 "onboarding.setup.notifications.description" = "瞬間をお知らせするために";
