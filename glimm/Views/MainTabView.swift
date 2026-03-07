@@ -80,7 +80,7 @@ struct MainTabView: View {
             // Regular tabs in glass container
             HStack(spacing: 0) {
                 tabButton(icon: "square.stack", title: String(localized: "tab.timeline"), tag: 0)
-                tabButton(icon: "sparkles.rectangle.stack", title: String(localized: "tab.review"), tag: 1)
+                tabButton(icon: "sparkles", title: String(localized: "tab.review"), tag: 1)
                 tabButton(icon: "gearshape", title: String(localized: "tab.settings"), tag: 2)
             }
             .padding(.horizontal, 12)
