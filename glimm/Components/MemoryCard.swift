@@ -31,13 +31,33 @@ struct MemoryCard: View {
                             .lineLimit(3)
                     }
 
-                    Text("\(memory.capturedAt.formatted(date: .abbreviated, time: .shortened))")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    HStack(spacing: 8) {
+                        Text("\(memory.capturedAt.formatted(date: .abbreviated, time: .shortened))")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+
+                        if memory.audioData != nil {
+                            Label(
+                                (memory.audioDuration ?? 0).formattedAsAudioDuration,
+                                systemImage: "waveform"
+                            )
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        }
+                    }
                 }
                 .padding(16)
             }
         }
+    }
+}
+
+private extension TimeInterval {
+    var formattedAsAudioDuration: String {
+        let totalSeconds = Int(self.rounded())
+        let minutes = totalSeconds / 60
+        let seconds = totalSeconds % 60
+        return String(format: "%d:%02d", minutes, seconds)
     }
 }
 

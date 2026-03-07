@@ -5,7 +5,6 @@
 
 import SwiftUI
 import SwiftData
-import PhotosUI
 import CoreLocation
 
 struct CaptureView: View {
@@ -13,8 +12,13 @@ struct CaptureView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var locationService = LocationService()
     @State private var capturedImage: UIImage?
-    @State private var showNoteInput = false
+    @State private var showCaptureReview = false
+    @State private var showNoteEditor = false
+    @State private var showAudioEditor = false
     @State private var note = ""
+    @State private var audioData: Data?
+    @State private var audioDuration: Double?
+    @State private var isAudioRecording = false
     @State private var showLocationPicker = false
     @State private var selectedLocationName: String?
     @State private var selectedLatitude: Double?
@@ -29,12 +33,12 @@ struct CaptureView: View {
                 dismiss()
             }
         )
-        .sheet(isPresented: $showNoteInput) {
-            noteInputSheet
+        .sheet(isPresented: $showCaptureReview) {
+            captureReviewSheet
         }
         .onChange(of: capturedImage) { _, newValue in
             if newValue != nil {
-                showNoteInput = true
+                showCaptureReview = true
             }
         }
         .onAppear {
@@ -42,58 +46,97 @@ struct CaptureView: View {
         }
     }
 
-    private var noteInputSheet: some View {
+    private var captureReviewSheet: some View {
         NavigationStack {
-            VStack(spacing: 24) {
-                if let image = capturedImage {
-                    Image(uiImage: image)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(height: 200)
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                }
+            ScrollView {
+                VStack(spacing: 24) {
+                    if let image = capturedImage {
+                        Image(uiImage: image)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(height: 260)
+                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                    }
 
-                Text(String(localized: "capture.note.title"))
-                    .font(.title2)
-                    .fontWeight(.semibold)
+                    Button {
+                        saveMemory()
+                    } label: {
+                        Text(String(localized: "capture.review.saveNow"))
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 16)
+                            .background(Color.primary)
+                            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                    }
+                    .disabled(!canSaveMemory)
+                    .opacity(canSaveMemory ? 1 : 0.5)
 
-                NoteTextField(
-                    text: $note,
-                    placeholder: String(localized: "capture.note.placeholder")
-                )
+                    optionalSection(
+                        title: String(localized: "capture.note.title"),
+                        subtitle: note.isEmpty
+                            ? String(localized: "capture.review.note.add")
+                            : note,
+                        systemImage: "text.alignleft",
+                        isExpanded: $showNoteEditor
+                    ) {
+                        NoteTextField(
+                            text: $note,
+                            placeholder: String(localized: "capture.note.placeholder")
+                        )
+                    }
 
-                // Location picker button
-                Button {
-                    showLocationPicker = true
-                } label: {
-                    HStack {
-                        Image(systemName: "location.fill")
-                            .foregroundStyle(.blue)
-                        if let locationName = selectedLocationName {
-                            Text(locationName)
-                                .foregroundStyle(.primary)
-                        } else {
-                            Text(String(localized: "capture.location.add"))
+                    optionalSection(
+                        title: String(localized: "capture.audio.title"),
+                        subtitle: audioData == nil
+                            ? String(localized: "capture.review.audio.add")
+                            : String(localized: "capture.audio.saved"),
+                        systemImage: "waveform",
+                        isExpanded: $showAudioEditor
+                    ) {
+                        AudioNoteComposer(
+                            audioData: $audioData,
+                            audioDuration: $audioDuration,
+                            isRecording: $isAudioRecording
+                        )
+                    }
+
+                    Button {
+                        showLocationPicker = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "location.fill")
+                                .foregroundStyle(.blue)
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(String(localized: "capture.location.title"))
+                                    .font(.subheadline)
+                                    .fontWeight(.medium)
+                                    .foregroundStyle(.primary)
+                                Text(selectedLocationName ?? String(localized: "capture.location.add"))
+                                    .font(.caption)
+                                    .foregroundStyle(selectedLocationName == nil ? .secondary : .primary)
+                                    .lineLimit(2)
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                        .padding(16)
+                        .glassEffect(cornerRadius: 16)
                     }
-                    .padding(16)
-                    .glassEffect(cornerRadius: 12)
-                }
+                    .buttonStyle(.plain)
 
-                Spacer()
+                    Spacer(minLength: 0)
+                }
+                .padding(24)
             }
-            .padding(24)
+            .navigationTitle(String(localized: "capture.review.title"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(String(localized: "common.cancel")) {
-                        showNoteInput = false
-                        dismiss()
+                        cancelCapture()
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
@@ -101,6 +144,7 @@ struct CaptureView: View {
                         saveMemory()
                     }
                     .fontWeight(.semibold)
+                    .disabled(!canSaveMemory)
                 }
             }
             .sheet(isPresented: $showLocationPicker) {
@@ -116,6 +160,73 @@ struct CaptureView: View {
         }
         .interactiveDismissDisabled()
         .presentationDetents([.large])
+    }
+
+    private var canSaveMemory: Bool {
+        capturedImage != nil && !isAudioRecording
+    }
+
+    @ViewBuilder
+    private func optionalSection<Content: View>(
+        title: String,
+        subtitle: String,
+        systemImage: String,
+        isExpanded: Binding<Bool>,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(spacing: 12) {
+            Button {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    isExpanded.wrappedValue.toggle()
+                }
+            } label: {
+                HStack(spacing: 12) {
+                    Image(systemName: systemImage)
+                        .foregroundStyle(.primary)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(title)
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .foregroundStyle(.primary)
+                        Text(subtitle)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(2)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .rotationEffect(.degrees(isExpanded.wrappedValue ? 90 : 0))
+                }
+                .padding(16)
+                .glassEffect(cornerRadius: 16)
+            }
+            .buttonStyle(.plain)
+
+            if isExpanded.wrappedValue {
+                content()
+            }
+        }
+    }
+
+    private func cancelCapture() {
+        resetDraft()
+        showCaptureReview = false
+        dismiss()
+    }
+
+    private func resetDraft() {
+        capturedImage = nil
+        note = ""
+        audioData = nil
+        audioDuration = nil
+        isAudioRecording = false
+        selectedLocationName = nil
+        selectedLatitude = nil
+        selectedLongitude = nil
+        showNoteEditor = false
+        showAudioEditor = false
     }
 
     private func autoDetectLocation() async {
@@ -137,7 +248,8 @@ struct CaptureView: View {
 
     private func saveMemory() {
         guard let image = capturedImage,
-              let imageData = image.jpegData(compressionQuality: 0.8) else {
+              let imageData = image.jpegData(compressionQuality: 0.8),
+              !isAudioRecording else {
             return
         }
 
@@ -145,14 +257,17 @@ struct CaptureView: View {
 
         let memory = Memory(
             imageData: imageData,
+            audioData: audioData,
             note: trimmedNote.isEmpty ? nil : trimmedNote,
+            audioDuration: audioDuration,
             latitude: selectedLatitude,
             longitude: selectedLongitude,
             locationName: selectedLocationName
         )
         modelContext.insert(memory)
 
-        showNoteInput = false
+        resetDraft()
+        showCaptureReview = false
         dismiss()
     }
 }

@@ -133,3 +133,51 @@
 "onboarding.setup.camera" = "Kamera";
 "onboarding.setup.camera.description" = "Um deine Momente festzuhalten";
 "onboarding.setup.schedule" = "Benachrichtigungsplan";
+
+// MARK: - Review
+"review.title" = "Review";
+"review.tab.highlights" = "Highlights";
+"review.tab.places" = "Orte";
+"review.tab.map" = "Karte";
+"review.empty.title" = "Noch keine Rückblicke";
+"review.empty.subtitle" = "Halte ein paar Momente fest und glimm erstellt Highlights und Orte für dich.";
+"review.highlights.hero" = "Neuester Highlight";
+"review.highlights.recent" = "Letzte Momente";
+"review.highlights.revisit" = "Wieder ansehen";
+"review.places.empty" = "Füge Orts-Tags hinzu, um Erinnerungen nach Orten zu entdecken.";
+"review.places.count %lld" = "%lld Besuche";
+"review.places.lastVisited %@" = "Zuletzt besucht %@";
+
+// MARK: - Capture Review
+"capture.review.title" = "Aufnahme prüfen";
+"capture.review.saveNow" = "Jetzt speichern";
+"capture.review.note.add" = "Optionale Notiz";
+"capture.review.audio.add" = "Optionale Sprachnotiz";
+"capture.location.title" = "Ort";
+
+// MARK: - Audio
+"capture.audio.title" = "Sprachnotiz";
+"capture.audio.description" = "Nimm bis zu 60 Sekunden auf.";
+"capture.audio.record" = "Aufnehmen";
+"capture.audio.stop" = "Stopp";
+"capture.audio.delete" = "Löschen";
+"capture.audio.rerecord" = "Neu aufnehmen";
+"capture.audio.saved" = "Sprachnotiz gespeichert";
+"capture.audio.permissionDenied" = "Mikrofonzugriff ist deaktiviert. Du kannst das Foto trotzdem ohne Audio speichern.";
+"capture.audio.openSettings" = "Einstellungen öffnen";
+
+// MARK: - Notification Cadence
+"settings.notifications.interval" = "Erinnerungsrhythmus";
+"settings.notifications.interval.option %lld" = "%lld Std.";
+"settings.notifications.interval.summary %lld" = "Aktiv: alle %lld Stunden";
+"settings.notifications.interval.summaryInactive" = "Unten ist die feste Anzahl pro Tag aktiv.";
+"settings.notifications.customCount" = "Feste Anzahl pro Tag";
+"settings.notifications.customCount.description" = "Lege eine feste Anzahl von Erinnerungen pro Tag statt eines Stundenintervalls fest.";
+"settings.notifications.customCount.active" = "Derzeit aktiv";
+"settings.notifications.customCount.inactive" = "Nur verwenden, wenn du eine feste Anzahl pro Tag willst.";
+
+// MARK: - Detail
+"detail.audio" = "Sprachnotiz";
+
+// MARK: - Main Tab
+"tab.review" = "Review";

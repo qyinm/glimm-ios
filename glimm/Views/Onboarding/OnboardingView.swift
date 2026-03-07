@@ -14,6 +14,8 @@ struct OnboardingView: View {
     @State private var notifyStart = Calendar.current.date(from: DateComponents(hour: 9, minute: 0)) ?? Date()
     @State private var notifyEnd = Calendar.current.date(from: DateComponents(hour: 21, minute: 0)) ?? Date()
     @State private var notifyFrequency = 3
+    @State private var notificationCadenceMode: NotificationCadenceMode = .interval
+    @State private var notificationIntervalHours = 3
 
     private let totalPages = 4
 
@@ -37,7 +39,9 @@ struct OnboardingView: View {
                     OnboardingSetupPage(
                         notifyStart: $notifyStart,
                         notifyEnd: $notifyEnd,
-                        notifyFrequency: $notifyFrequency
+                        notifyFrequency: $notifyFrequency,
+                        notificationCadenceMode: $notificationCadenceMode,
+                        notificationIntervalHours: $notificationIntervalHours
                     )
                     .tag(3)
                 }
@@ -115,6 +119,8 @@ struct OnboardingView: View {
         settings.notifyStart = notifyStart
         settings.notifyEnd = notifyEnd
         settings.notifyFrequency = notifyFrequency
+        settings.setCadenceMode(notificationCadenceMode)
+        settings.notificationIntervalHours = notificationIntervalHours
         settings.notifyEnabled = true
 
         // Schedule notifications

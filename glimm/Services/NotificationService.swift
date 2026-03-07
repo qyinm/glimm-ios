@@ -38,79 +38,10 @@ class NotificationService {
     func scheduleRandomNotifications(settings: Settings) async {
         cancelAllNotifications()
 
-        guard settings.notifyEnabled else { return }
-
-        let calendar = Calendar.current
-
-        // Schedule for the next 7 days
-        for dayOffset in 0..<7 {
-            guard let targetDate = calendar.date(byAdding: .day, value: dayOffset, to: Date()) else {
-                continue
-            }
-
-            let randomTimes = generateRandomTimes(
-                count: settings.notifyFrequency,
-                start: settings.notifyStart,
-                end: settings.notifyEnd,
-                for: targetDate
-            )
-
-            for time in randomTimes {
-                // Skip times in the past
-                if time <= Date() { continue }
-
-                await scheduleNotification(at: time)
-            }
+        let dates = NotificationScheduleBuilder.scheduleDates(settings: settings, now: Date())
+        for time in dates {
+            await scheduleNotification(at: time)
         }
-    }
-
-    /// Minimum gap between notifications in minutes
-    private let minimumGapMinutes = AppConstants.notificationMinimumGapMinutes
-
-    private func generateRandomTimes(
-        count: Int,
-        start: Date,
-        end: Date,
-        for date: Date
-    ) -> [Date] {
-        let calendar = Calendar.current
-
-        let startHour = calendar.component(.hour, from: start)
-        let startMinute = calendar.component(.minute, from: start)
-        let endHour = calendar.component(.hour, from: end)
-        let endMinute = calendar.component(.minute, from: end)
-
-        let startMinutes = startHour * 60 + startMinute
-        let endMinutes = endHour * 60 + endMinute
-
-        guard endMinutes > startMinutes else { return [] }
-
-        let totalRange = endMinutes - startMinutes
-        var times: [Date] = []
-
-        // Divide time range into segments to ensure minimum gap
-        let segmentSize = totalRange / count
-
-        for i in 0..<count {
-            let segmentStart = startMinutes + (i * segmentSize)
-            let segmentEnd = min(segmentStart + segmentSize - minimumGapMinutes, endMinutes)
-
-            guard segmentEnd > segmentStart else { continue }
-
-            let randomMinutes = Int.random(in: segmentStart..<segmentEnd)
-            let hour = randomMinutes / 60
-            let minute = randomMinutes % 60
-
-            var components = calendar.dateComponents([.year, .month, .day], from: date)
-            components.hour = hour
-            components.minute = minute
-
-            if let time = calendar.date(from: components) {
-                times.append(time)
-            }
-        }
-
-        return times.sorted()
     }
 
     private func scheduleNotification(at date: Date) async {

@@ -168,10 +168,19 @@ final class ExportService {
                 .prefix(30)
             filename += "_\(sanitizedNote)"
         }
+        let baseFilename = filename
         filename += ".jpg"
 
         let filePath = monthDir.appendingPathComponent(filename)
         try imageData.write(to: filePath)
+
+        var audioFilename: String?
+        if let audioData = memory.audioData {
+            let candidate = "\(baseFilename).m4a"
+            let audioPath = monthDir.appendingPathComponent(candidate)
+            try audioData.write(to: audioPath)
+            audioFilename = candidate
+        }
 
         var entry: [String: Any] = [
             "id": memory.id.uuidString,
@@ -189,6 +198,12 @@ final class ExportService {
         }
         if let locationName = memory.locationName {
             entry["locationName"] = locationName
+        }
+        if let audioFilename {
+            entry["audioFile"] = "\(monthFolder)/\(audioFilename)"
+        }
+        if let audioDuration = memory.audioDuration {
+            entry["audioDuration"] = audioDuration
         }
 
         return entry

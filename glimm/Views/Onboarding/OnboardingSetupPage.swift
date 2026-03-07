@@ -10,6 +10,8 @@ struct OnboardingSetupPage: View {
     @Binding var notifyStart: Date
     @Binding var notifyEnd: Date
     @Binding var notifyFrequency: Int
+    @Binding var notificationCadenceMode: NotificationCadenceMode
+    @Binding var notificationIntervalHours: Int
 
     @State private var notificationGranted = false
     @State private var cameraGranted = false
@@ -78,73 +80,13 @@ struct OnboardingSetupPage: View {
                         .padding(.leading, 4)
 
                     GlassCard(padding: 0) {
-                        VStack(spacing: 0) {
-                            // Start time
-                            settingRow {
-                                HStack {
-                                    Text(String(localized: "settings.notifications.startTime"))
-                                    Spacer()
-                                    DatePicker(
-                                        "",
-                                        selection: $notifyStart,
-                                        displayedComponents: .hourAndMinute
-                                    )
-                                    .labelsHidden()
-                                }
-                            }
-
-                            Divider()
-                                .padding(.leading, 16)
-
-                            // End time
-                            settingRow {
-                                HStack {
-                                    Text(String(localized: "settings.notifications.endTime"))
-                                    Spacer()
-                                    DatePicker(
-                                        "",
-                                        selection: $notifyEnd,
-                                        displayedComponents: .hourAndMinute
-                                    )
-                                    .labelsHidden()
-                                }
-                            }
-
-                            Divider()
-                                .padding(.leading, 16)
-
-                            // Frequency
-                            settingRow {
-                                HStack {
-                                    Text("settings.notifications.frequency \(notifyFrequency)", bundle: .main)
-                                    Spacer()
-                                    HStack(spacing: 0) {
-                                        Button {
-                                            if notifyFrequency > 1 {
-                                                notifyFrequency -= 1
-                                            }
-                                        } label: {
-                                            Image(systemName: "minus")
-                                                .frame(width: 44, height: 36)
-                                        }
-
-                                        Divider()
-                                            .frame(height: 20)
-
-                                        Button {
-                                            if notifyFrequency < 10 {
-                                                notifyFrequency += 1
-                                            }
-                                        } label: {
-                                            Image(systemName: "plus")
-                                                .frame(width: 44, height: 36)
-                                        }
-                                    }
-                                    .foregroundStyle(.primary)
-                                    .glassEffect(cornerRadius: 10)
-                                }
-                            }
-                        }
+                        NotificationCadenceEditor(
+                            notifyStart: $notifyStart,
+                            notifyEnd: $notifyEnd,
+                            cadenceMode: $notificationCadenceMode,
+                            intervalHours: $notificationIntervalHours,
+                            dailyCount: $notifyFrequency
+                        )
                     }
 
                     Text(String(localized: "settings.notifications.description"))
@@ -200,18 +142,14 @@ struct OnboardingSetupPage: View {
         .padding(.horizontal, 16)
         .padding(.vertical, 14)
     }
-
-    private func settingRow<Content: View>(@ViewBuilder content: () -> Content) -> some View {
-        content()
-            .padding(.horizontal, 16)
-            .padding(.vertical, 14)
-    }
 }
 
 #Preview {
     OnboardingSetupPage(
         notifyStart: .constant(Calendar.current.date(from: DateComponents(hour: 9)) ?? Date()),
         notifyEnd: .constant(Calendar.current.date(from: DateComponents(hour: 21)) ?? Date()),
-        notifyFrequency: .constant(3)
+        notifyFrequency: .constant(3),
+        notificationCadenceMode: .constant(.interval),
+        notificationIntervalHours: .constant(3)
     )
 }

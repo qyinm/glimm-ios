@@ -133,3 +133,51 @@
 "onboarding.setup.camera" = "Appareil photo";
 "onboarding.setup.camera.description" = "Pour capturer tes moments";
 "onboarding.setup.schedule" = "Horaire des notifications";
+
+// MARK: - Review
+"review.title" = "Revue";
+"review.tab.highlights" = "Highlights";
+"review.tab.places" = "Lieux";
+"review.tab.map" = "Carte";
+"review.empty.title" = "Aucun récapitulatif pour l'instant";
+"review.empty.subtitle" = "Capture quelques instants et glimm créera des highlights et des lieux pour toi.";
+"review.highlights.hero" = "Dernier highlight";
+"review.highlights.recent" = "Moments récents";
+"review.highlights.revisit" = "À revoir";
+"review.places.empty" = "Ajoute des lieux pour explorer tes souvenirs par endroit.";
+"review.places.count %lld" = "%lld visites";
+"review.places.lastVisited %@" = "Dernière visite %@";
+
+// MARK: - Capture Review
+"capture.review.title" = "Vérifier la capture";
+"capture.review.saveNow" = "Enregistrer maintenant";
+"capture.review.note.add" = "Note textuelle facultative";
+"capture.review.audio.add" = "Note vocale facultative";
+"capture.location.title" = "Lieu";
+
+// MARK: - Audio
+"capture.audio.title" = "Note vocale";
+"capture.audio.description" = "Enregistre jusqu'à 60 secondes.";
+"capture.audio.record" = "Enregistrer";
+"capture.audio.stop" = "Arrêter";
+"capture.audio.delete" = "Supprimer";
+"capture.audio.rerecord" = "Réenregistrer";
+"capture.audio.saved" = "Note vocale enregistrée";
+"capture.audio.permissionDenied" = "L'accès au micro est désactivé. Tu peux quand même enregistrer la photo sans audio.";
+"capture.audio.openSettings" = "Ouvrir Réglages";
+
+// MARK: - Notification Cadence
+"settings.notifications.interval" = "Fréquence des rappels";
+"settings.notifications.interval.option %lld" = "%lld h";
+"settings.notifications.interval.summary %lld" = "Actif : toutes les %lld heures";
+"settings.notifications.interval.summaryInactive" = "Le nombre fixe par jour est actif ci-dessous.";
+"settings.notifications.customCount" = "Nombre fixe par jour";
+"settings.notifications.customCount.description" = "Choisis un nombre fixe de rappels par jour au lieu d'un intervalle horaire.";
+"settings.notifications.customCount.active" = "Actif actuellement";
+"settings.notifications.customCount.inactive" = "À utiliser seulement si tu veux un nombre fixe par jour.";
+
+// MARK: - Detail
+"detail.audio" = "Note vocale";
+
+// MARK: - Main Tab
+"tab.review" = "Revue";

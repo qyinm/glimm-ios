@@ -80,83 +80,29 @@ struct SettingsView: View {
                     if settings.notifyEnabled {
                         divider
 
-                        // Start time
-                        settingRow {
-                            HStack {
-                                Text(String(localized: "settings.notifications.startTime"))
-                                Spacer()
-                                DatePicker(
-                                    "",
-                                    selection: Binding(
-                                        get: { settings.notifyStart },
-                                        set: {
-                                            settings.notifyStart = $0
-                                            rescheduleNotifications()
-                                        }
-                                    ),
-                                    displayedComponents: .hourAndMinute
-                                )
-                                .labelsHidden()
-                            }
-                        }
-
-                        divider
-
-                        // End time
-                        settingRow {
-                            HStack {
-                                Text(String(localized: "settings.notifications.endTime"))
-                                Spacer()
-                                DatePicker(
-                                    "",
-                                    selection: Binding(
-                                        get: { settings.notifyEnd },
-                                        set: {
-                                            settings.notifyEnd = $0
-                                            rescheduleNotifications()
-                                        }
-                                    ),
-                                    displayedComponents: .hourAndMinute
-                                )
-                                .labelsHidden()
-                            }
-                        }
-
-                        divider
-
-                        // Frequency
-                        settingRow {
-                            HStack {
-                                Text("settings.notifications.frequency \(settings.notifyFrequency)", bundle: .main)
-                                Spacer()
-                                HStack(spacing: 0) {
-                                    Button {
-                                        if settings.notifyFrequency > 1 {
-                                            settings.notifyFrequency -= 1
-                                            rescheduleNotifications()
-                                        }
-                                    } label: {
-                                        Image(systemName: "minus")
-                                            .frame(width: 44, height: 36)
-                                    }
-
-                                    Divider()
-                                        .frame(height: 20)
-
-                                    Button {
-                                        if settings.notifyFrequency < 10 {
-                                            settings.notifyFrequency += 1
-                                            rescheduleNotifications()
-                                        }
-                                    } label: {
-                                        Image(systemName: "plus")
-                                            .frame(width: 44, height: 36)
-                                    }
-                                }
-                                .foregroundStyle(.primary)
-                                .glassEffect(cornerRadius: 10)
-                            }
-                        }
+                        NotificationCadenceEditor(
+                            notifyStart: Binding(
+                                get: { settings.notifyStart },
+                                set: { settings.notifyStart = $0 }
+                            ),
+                            notifyEnd: Binding(
+                                get: { settings.notifyEnd },
+                                set: { settings.notifyEnd = $0 }
+                            ),
+                            cadenceMode: Binding(
+                                get: { settings.usesLegacyDailyCount ? .customCount : settings.cadenceMode },
+                                set: { settings.setCadenceMode($0) }
+                            ),
+                            intervalHours: Binding(
+                                get: { settings.effectiveNotificationIntervalHours },
+                                set: { settings.notificationIntervalHours = $0 }
+                            ),
+                            dailyCount: Binding(
+                                get: { settings.notifyFrequency },
+                                set: { settings.notifyFrequency = $0 }
+                            ),
+                            onChange: rescheduleNotifications
+                        )
                     }
                 }
             }

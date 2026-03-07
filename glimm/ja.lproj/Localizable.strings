@@ -133,3 +133,51 @@
 "onboarding.setup.camera" = "カメラ";
 "onboarding.setup.camera.description" = "瞬間を撮影するために";
 "onboarding.setup.schedule" = "通知スケジュール";
+
+// MARK: - Review
+"review.title" = "レビュー";
+"review.tab.highlights" = "ハイライト";
+"review.tab.places" = "場所";
+"review.tab.map" = "マップ";
+"review.empty.title" = "まだレビューできる思い出がありません";
+"review.empty.subtitle" = "いくつか瞬間を記録すると、glimmがハイライトと場所別レビューを作成します。";
+"review.highlights.hero" = "最新ハイライト";
+"review.highlights.recent" = "最近の瞬間";
+"review.highlights.revisit" = "もう一度見たい瞬間";
+"review.places.empty" = "場所タグを追加すると、場所ごとに思い出を見返せます。";
+"review.places.count %lld" = "%lld回訪問";
+"review.places.lastVisited %@" = "最終訪問 %@";
+
+// MARK: - Capture Review
+"capture.review.title" = "キャプチャ確認";
+"capture.review.saveNow" = "今すぐ保存";
+"capture.review.note.add" = "任意のテキストメモ";
+"capture.review.audio.add" = "任意の音声メモ";
+"capture.location.title" = "場所";
+
+// MARK: - Audio
+"capture.audio.title" = "音声メモ";
+"capture.audio.description" = "最大60秒まで録音できます。";
+"capture.audio.record" = "録音";
+"capture.audio.stop" = "停止";
+"capture.audio.delete" = "削除";
+"capture.audio.rerecord" = "再録音";
+"capture.audio.saved" = "音声メモを保存しました";
+"capture.audio.permissionDenied" = "マイクへのアクセスがオフです。音声なしでも写真は保存できます。";
+"capture.audio.openSettings" = "設定を開く";
+
+// MARK: - Notification Cadence
+"settings.notifications.interval" = "通知頻度";
+"settings.notifications.interval.option %lld" = "%lld時間";
+"settings.notifications.interval.summary %lld" = "現在: %lld時間ごと";
+"settings.notifications.interval.summaryInactive" = "下の日ごとの回数設定が有効です。";
+"settings.notifications.customCount" = "1日の固定回数";
+"settings.notifications.customCount.description" = "時間間隔の代わりに、1日に受け取る通知回数を固定します。";
+"settings.notifications.customCount.active" = "現在有効";
+"settings.notifications.customCount.inactive" = "1日の固定回数を使いたい場合のみ利用します。";
+
+// MARK: - Detail
+"detail.audio" = "音声メモ";
+
+// MARK: - Main Tab
+"tab.review" = "レビュー";

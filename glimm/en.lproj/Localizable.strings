@@ -133,3 +133,51 @@
 "onboarding.setup.camera" = "Camera";
 "onboarding.setup.camera.description" = "To capture your moments";
 "onboarding.setup.schedule" = "Notification Schedule";
+
+// MARK: - Review
+"review.title" = "Review";
+"review.tab.highlights" = "Highlights";
+"review.tab.places" = "Places";
+"review.tab.map" = "Map";
+"review.empty.title" = "No reviews yet";
+"review.empty.subtitle" = "Capture a few moments and glimm will turn them into highlights and places.";
+"review.highlights.hero" = "Latest Highlight";
+"review.highlights.recent" = "Recent Moments";
+"review.highlights.revisit" = "Worth Revisiting";
+"review.places.empty" = "Add location tags to explore memories by place.";
+"review.places.count %lld" = "%lld visits";
+"review.places.lastVisited %@" = "Last visited %@";
+
+// MARK: - Capture Review
+"capture.review.title" = "Review Capture";
+"capture.review.saveNow" = "Save now";
+"capture.review.note.add" = "Optional text note";
+"capture.review.audio.add" = "Optional voice note";
+"capture.location.title" = "Location";
+
+// MARK: - Audio
+"capture.audio.title" = "Voice Note";
+"capture.audio.description" = "Record up to 60 seconds.";
+"capture.audio.record" = "Record";
+"capture.audio.stop" = "Stop";
+"capture.audio.delete" = "Delete";
+"capture.audio.rerecord" = "Re-record";
+"capture.audio.saved" = "Voice note saved";
+"capture.audio.permissionDenied" = "Microphone access is off. You can still save this photo without audio.";
+"capture.audio.openSettings" = "Open Settings";
+
+// MARK: - Notification Cadence
+"settings.notifications.interval" = "Prompt Frequency";
+"settings.notifications.interval.option %lld" = "%lldh";
+"settings.notifications.interval.summary %lld" = "Active: every %lld hours";
+"settings.notifications.interval.summaryInactive" = "Daily count is active below.";
+"settings.notifications.customCount" = "Custom Daily Count";
+"settings.notifications.customCount.description" = "Switch to a fixed number of prompts per day instead of hourly spacing.";
+"settings.notifications.customCount.active" = "Active now";
+"settings.notifications.customCount.inactive" = "Use this only if you want a fixed count per day.";
+
+// MARK: - Detail
+"detail.audio" = "Voice note";
+
+// MARK: - Main Tab
+"tab.review" = "Review";

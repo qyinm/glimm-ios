@@ -10,11 +10,17 @@ enum AppConstants {
     /// Maximum character limit for notes
     static let noteMaxLength = 280
 
+    /// Supported notification interval presets in hours
+    static let notificationIntervalPresets = [2, 3, 4, 6]
+
     /// Minimum gap between notifications in minutes
     static let notificationMinimumGapMinutes = 30
 
     /// Number of days to schedule notifications ahead
     static let notificationScheduleDays = 7
+
+    /// Maximum duration for a single audio note in seconds
+    static let maxAudioNoteDuration: TimeInterval = 60
 
     /// JPEG compression quality for exported images
     static let imageCompressionQuality: CGFloat = 0.8

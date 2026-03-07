@@ -133,3 +133,51 @@
 "onboarding.setup.camera" = "카메라";
 "onboarding.setup.camera.description" = "순간을 촬영하기 위해";
 "onboarding.setup.schedule" = "알림 일정";
+
+// MARK: - Review
+"review.title" = "리뷰";
+"review.tab.highlights" = "하이라이트";
+"review.tab.places" = "장소";
+"review.tab.map" = "지도";
+"review.empty.title" = "아직 리뷰할 추억이 없어요";
+"review.empty.subtitle" = "몇 개의 순간을 기록하면 glimm이 하이라이트와 장소별 리뷰를 만들어줍니다.";
+"review.highlights.hero" = "최근 하이라이트";
+"review.highlights.recent" = "최근 순간";
+"review.highlights.revisit" = "다시 보고 싶은 순간";
+"review.places.empty" = "장소 태그를 추가하면 위치별로 추억을 둘러볼 수 있어요.";
+"review.places.count %lld" = "%lld번 방문";
+"review.places.lastVisited %@" = "마지막 방문 %@";
+
+// MARK: - Capture Review
+"capture.review.title" = "캡처 검토";
+"capture.review.saveNow" = "바로 저장";
+"capture.review.note.add" = "선택형 텍스트 메모";
+"capture.review.audio.add" = "선택형 음성 메모";
+"capture.location.title" = "위치";
+
+// MARK: - Audio
+"capture.audio.title" = "음성 메모";
+"capture.audio.description" = "최대 60초까지 녹음할 수 있어요.";
+"capture.audio.record" = "녹음";
+"capture.audio.stop" = "중지";
+"capture.audio.delete" = "삭제";
+"capture.audio.rerecord" = "다시 녹음";
+"capture.audio.saved" = "음성 메모가 저장됨";
+"capture.audio.permissionDenied" = "마이크 접근이 꺼져 있어요. 오디오 없이도 사진은 저장할 수 있습니다.";
+"capture.audio.openSettings" = "설정 열기";
+
+// MARK: - Notification Cadence
+"settings.notifications.interval" = "알림 빈도";
+"settings.notifications.interval.option %lld" = "%lld시간";
+"settings.notifications.interval.summary %lld" = "현재 설정: %lld시간 간격";
+"settings.notifications.interval.summaryInactive" = "아래의 하루 횟수 설정이 활성화되어 있어요.";
+"settings.notifications.customCount" = "하루 횟수 직접 설정";
+"settings.notifications.customCount.description" = "시간 간격 대신 하루에 받을 알림 횟수를 고정합니다.";
+"settings.notifications.customCount.active" = "현재 사용 중";
+"settings.notifications.customCount.inactive" = "하루 고정 횟수를 원할 때만 사용하세요.";
+
+// MARK: - Detail
+"detail.audio" = "음성 메모";
+
+// MARK: - Main Tab
+"tab.review" = "리뷰";

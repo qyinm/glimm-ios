@@ -1,3 +1,4 @@
 "NSCameraUsageDescription" = "glimm needs camera access to capture your moments.";
 "NSLocationWhenInUseUsageDescription" = "glimm uses your location to tag where your memories were captured.";
+"NSMicrophoneUsageDescription" = "glimm uses your microphone for optional voice notes.";
 "NSPhotoLibraryAddUsageDescription" = "glimm needs permission to save photos to your album for backup.";

@@ -162,6 +162,18 @@ struct MemoryDetailView: View {
                     .foregroundStyle(.white.opacity(0.7))
                 }
             }
+
+            if let audioData = memory.audioData {
+                AudioNotePlaybackView(
+                    audioData: audioData,
+                    audioDuration: memory.audioDuration,
+                    title: String(localized: "detail.audio"),
+                    accentColor: .white,
+                    controlForegroundColor: .black,
+                    textColor: .white,
+                    secondaryTextColor: .white.opacity(0.7)
+                )
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(20)
