@@ -141,12 +141,22 @@
 "review.tab.map" = "マップ";
 "review.empty.title" = "まだレビューできる思い出がありません";
 "review.empty.subtitle" = "いくつか瞬間を記録すると、glimmがハイライトと場所別レビューを作成します。";
-"review.highlights.hero" = "最新ハイライト";
-"review.highlights.recent" = "最近の瞬間";
-"review.highlights.revisit" = "もう一度見たい瞬間";
+"review.section.hero" = "最新ハイライト";
+"review.section.onThisDay" = "この日の思い出";
+"review.section.fallbackMemory" = "もう一度見る";
+"review.section.recentWeek" = "今週";
+"review.section.voiceMemories" = "音声メモ";
+"review.section.locationMemories" = "場所の記憶";
+"review.section.frequentPlaces" = "よく行く場所";
 "review.places.empty" = "場所タグを追加すると、場所ごとに思い出を見返せます。";
 "review.places.count %lld" = "%lld回訪問";
 "review.places.lastVisited %@" = "最終訪問 %@";
+"review.notification.memory.title" = "見返せる思い出があります";
+"review.notification.memory.body" = "保存したひとつの瞬間を静かに振り返りましょう。";
+"review.notification.voice.title" = "音声メモがあります";
+"review.notification.voice.body" = "以前保存した声を聞き返してみましょう。";
+"review.notification.place.title" = "見返せる場所の記憶があります";
+"review.notification.place.body" = "以前訪れた場所の思い出を振り返りましょう。";
 
 // MARK: - Capture Review
 "capture.review.title" = "キャプチャ確認";

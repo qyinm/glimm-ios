@@ -407,6 +407,12 @@ class DualCaptureService: NSObject, ObservableObject {
     // MARK: - Capture Logic
     
     private func captureMultiCam() {
+        guard canCapturePhoto(from: backPhotoOutput),
+              canCapturePhoto(from: frontPhotoOutput) else {
+            finishUnavailablePhotoConnection()
+            return
+        }
+
         let backSettings = AVCapturePhotoSettings()
         if backPhotoOutput.supportedFlashModes.contains(flashMode) {
             backSettings.flashMode = flashMode
@@ -422,7 +428,12 @@ class DualCaptureService: NSObject, ObservableObject {
     private func captureSingle() {
         let settings = AVCapturePhotoSettings()
         let output = isSwapped ? frontPhotoOutput : backPhotoOutput
-        
+
+        guard canCapturePhoto(from: output) else {
+            finishUnavailablePhotoConnection()
+            return
+        }
+
         if output.supportedFlashModes.contains(flashMode) {
             settings.flashMode = flashMode
         }
@@ -448,7 +459,14 @@ class DualCaptureService: NSObject, ObservableObject {
                 self.setupSingleCamSession(position: .back)
                 self.session.commitConfiguration()
             }
-            
+
+            guard self.canCapturePhoto(from: self.backPhotoOutput) else {
+                Task { @MainActor in
+                    self.finishUnavailablePhotoConnection()
+                }
+                return
+            }
+
             // Need a slight delay to let the session reconfigure and exposure settle if we just switched
             // But if we are already running back cam (default state), we can capture immediately
             self.backPhotoOutput.capturePhoto(with: settings, delegate: self)
@@ -468,13 +486,63 @@ class DualCaptureService: NSObject, ObservableObject {
             
             // Wait for ISP to settle (critical for single-session switch)
             Thread.sleep(forTimeInterval: 0.5) 
-            
+
             let settings = AVCapturePhotoSettings()
             settings.flashMode = .off
+            guard self.canCapturePhoto(from: self.frontPhotoOutput) else {
+                Task { @MainActor in
+                    self.finishUnavailablePhotoConnection()
+                }
+                return
+            }
             self.frontPhotoOutput.capturePhoto(with: settings, delegate: self)
         }
     }
-    
+
+    private func canCapturePhoto(from output: AVCapturePhotoOutput) -> Bool {
+        guard let connection = output.connection(with: .video) else {
+            return false
+        }
+
+        return connection.isActive && connection.isEnabled
+    }
+
+    private func finishUnavailablePhotoConnection() {
+        backCapturedImage = nil
+        frontCapturedImage = nil
+        capturedImage = nil
+
+        #if targetEnvironment(simulator)
+        capturedImage = Self.simulatorPlaceholderImage()
+        isCapturing = false
+        #else
+        isCapturing = false
+        errorMessage = CaptureError.photoCaptureFailed.localizedDescription
+        #endif
+    }
+
+    #if targetEnvironment(simulator)
+    private static func simulatorPlaceholderImage() -> UIImage {
+        let size = CGSize(width: 1080, height: 1440)
+        return UIGraphicsImageRenderer(size: size).image { context in
+            UIColor.black.setFill()
+            context.fill(CGRect(origin: .zero, size: size))
+
+            let text = "glimm simulator camera"
+            let attributes: [NSAttributedString.Key: Any] = [
+                .font: UIFont.systemFont(ofSize: 56, weight: .semibold),
+                .foregroundColor: UIColor.white.withAlphaComponent(0.85)
+            ]
+            let textSize = text.size(withAttributes: attributes)
+            let origin = CGPoint(
+                x: (size.width - textSize.width) / 2,
+                y: (size.height - textSize.height) / 2
+            )
+            text.draw(at: origin, withAttributes: attributes)
+        }
+    }
+    #endif
+
     // MARK: - Image Processing
     
     private func checkAndComposite() {

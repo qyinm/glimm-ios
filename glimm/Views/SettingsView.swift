@@ -42,8 +42,7 @@ struct SettingsView: View {
                 .padding(.vertical, 8)
                 .padding(.bottom, 100) // Space for tab bar
             }
-            .navigationTitle(String(localized: "settings.title"))
-            .navigationBarTitleDisplayMode(.large)
+            .toolbar(.hidden, for: .navigationBar)
             .background(Color(.systemBackground))
         }
     }
@@ -70,7 +69,9 @@ struct SettingsView: View {
                                         await NotificationService.shared.scheduleRandomNotifications(settings: settings)
                                     }
                                 } else {
-                                    NotificationService.shared.cancelAllNotifications()
+                                    Task {
+                                        await NotificationService.shared.cancelNotifications(kind: .capture)
+                                    }
                                 }
                             }
                         ))

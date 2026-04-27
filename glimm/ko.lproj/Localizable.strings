@@ -141,12 +141,22 @@
 "review.tab.map" = "지도";
 "review.empty.title" = "아직 리뷰할 추억이 없어요";
 "review.empty.subtitle" = "몇 개의 순간을 기록하면 glimm이 하이라이트와 장소별 리뷰를 만들어줍니다.";
-"review.highlights.hero" = "최근 하이라이트";
-"review.highlights.recent" = "최근 순간";
-"review.highlights.revisit" = "다시 보고 싶은 순간";
+"review.section.hero" = "최근 하이라이트";
+"review.section.onThisDay" = "오늘의 기억";
+"review.section.fallbackMemory" = "다시 보기";
+"review.section.recentWeek" = "이번 주";
+"review.section.voiceMemories" = "음성 메모";
+"review.section.locationMemories" = "장소별 기억";
+"review.section.frequentPlaces" = "자주 간 장소";
 "review.places.empty" = "장소 태그를 추가하면 위치별로 추억을 둘러볼 수 있어요.";
 "review.places.count %lld" = "%lld번 방문";
 "review.places.lastVisited %@" = "마지막 방문 %@";
+"review.notification.memory.title" = "다시 볼 추억이 있어요";
+"review.notification.memory.body" = "저장해 둔 한 순간을 조용히 돌아보세요.";
+"review.notification.voice.title" = "음성 메모가 기다리고 있어요";
+"review.notification.voice.body" = "전에 저장한 목소리를 다시 들어보세요.";
+"review.notification.place.title" = "다시 볼 장소의 기억이 있어요";
+"review.notification.place.body" = "예전에 머물렀던 곳의 추억을 돌아보세요.";
 
 // MARK: - Capture Review
 "capture.review.title" = "캡처 검토";

@@ -25,12 +25,18 @@ struct ReviewView: View {
     @State private var selectedPlace: PlaceMemoryGroup?
     @State private var showCalendar = false
 
-    private var highlights: ReviewHighlights {
-        ReviewOrganizer.highlights(from: memories)
+    private var reviewHome: ReviewHome {
+        ReviewOrganizer.reviewHome(from: memories)
     }
 
     private var placeGroups: [PlaceMemoryGroup] {
         ReviewOrganizer.placeGroups(from: memories)
+    }
+
+    private var highlightSections: [ReviewSection] {
+        ReviewSectionReason.reviewHomeDisplayOrder.flatMap { reason in
+            reviewHome.sections.filter { $0.reason == reason }
+        }
     }
 
     var body: some View {
@@ -42,8 +48,8 @@ struct ReviewView: View {
                     contentView
                 }
             }
-            .navigationTitle(String(localized: "review.title"))
-            .navigationBarTitleDisplayMode(.large)
+            .navigationTitle("")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
@@ -61,7 +67,7 @@ struct ReviewView: View {
                 PlaceClusterSheetView(selection: selection)
             }
             .sheet(item: $selectedPlace) { place in
-                MemoryCollectionView(title: place.name, memories: place.memories)
+                PlaceReviewDetailView(place: place)
             }
             .sheet(isPresented: $showCalendar) {
                 CalendarView()
@@ -113,51 +119,39 @@ struct ReviewView: View {
     private var highlightsView: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
-                if let hero = highlights.hero {
-                    VStack(alignment: .leading, spacing: 12) {
-                        sectionHeader(String(localized: "review.highlights.hero"))
-
-                        Button {
-                            selectedMemory = hero
-                        } label: {
-                            MemoryCard(memory: hero)
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-
-                if !highlights.recent.isEmpty {
-                    VStack(alignment: .leading, spacing: 12) {
-                        sectionHeader(String(localized: "review.highlights.recent"))
-
-                        ForEach(highlights.recent) { memory in
-                            Button {
-                                selectedMemory = memory
-                            } label: {
-                                MemoryCard(memory: memory)
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                }
-
-                if !highlights.revisit.isEmpty {
-                    VStack(alignment: .leading, spacing: 12) {
-                        sectionHeader(String(localized: "review.highlights.revisit"))
-
-                        ForEach(highlights.revisit) { memory in
-                            Button {
-                                selectedMemory = memory
-                            } label: {
-                                MemoryCard(memory: memory)
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
+                ForEach(Array(highlightSections.enumerated()), id: \.offset) { _, section in
+                    reviewSectionView(section)
                 }
             }
             .padding(.horizontal, 16)
             .padding(.bottom, DesignSystem.Spacing.tabBarBottom)
+        }
+    }
+
+    @ViewBuilder
+    private func reviewSectionView(_ section: ReviewSection) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            sectionHeader(section.reason.localizedSectionTitle)
+
+            if section.reason == .frequentPlaces {
+                ForEach(section.placeGroups) { place in
+                    Button {
+                        selectedPlace = place
+                    } label: {
+                        PlaceGroupCard(place: place)
+                    }
+                    .buttonStyle(.plain)
+                }
+            } else {
+                ForEach(section.memories) { memory in
+                    Button {
+                        selectedMemory = memory
+                    } label: {
+                        MemoryCard(memory: memory)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
         }
     }
 
@@ -225,6 +219,37 @@ private struct PlaceClusterSelection: Identifiable {
 
     var id: String {
         places.map(\.id).sorted().joined(separator: "|")
+    }
+}
+
+private extension ReviewSectionReason {
+    static let reviewHomeDisplayOrder: [ReviewSectionReason] = [
+        .hero,
+        .onThisDay,
+        .fallbackMemory,
+        .recentWeek,
+        .voiceMemories,
+        .locationMemories,
+        .frequentPlaces,
+    ]
+
+    var localizedSectionTitle: String {
+        switch self {
+        case .hero:
+            String(localized: "review.section.hero")
+        case .onThisDay:
+            String(localized: "review.section.onThisDay")
+        case .fallbackMemory:
+            String(localized: "review.section.fallbackMemory")
+        case .recentWeek:
+            String(localized: "review.section.recentWeek")
+        case .voiceMemories:
+            String(localized: "review.section.voiceMemories")
+        case .locationMemories:
+            String(localized: "review.section.locationMemories")
+        case .frequentPlaces:
+            String(localized: "review.section.frequentPlaces")
+        }
     }
 }
 
@@ -319,16 +344,15 @@ private struct PlaceClusterSheetView: View {
     }
 }
 
-private struct MemoryCollectionView: View {
-    let title: String
-    let memories: [Memory]
+private struct PlaceReviewDetailView: View {
+    let place: PlaceMemoryGroup
 
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationStack {
-            MemoryCollectionContentView(memories: memories)
-                .navigationTitle(title)
+            MemoryCollectionContentView(memories: place.memories)
+                .navigationTitle(place.name)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {

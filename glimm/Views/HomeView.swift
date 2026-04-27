@@ -20,8 +20,7 @@ struct HomeView: View {
                     memoryListView
                 }
             }
-            .navigationTitle("glimm")
-            .navigationBarTitleDisplayMode(.large)
+            .toolbar(.hidden, for: .navigationBar)
             .background(Color(.systemBackground))
             .sheet(item: $selectedMemory) { memory in
                 MemoryDetailView(memory: memory)

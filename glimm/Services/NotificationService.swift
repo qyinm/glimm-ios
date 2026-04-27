@@ -6,6 +6,111 @@
 import Foundation
 import UserNotifications
 
+struct NotificationRoute: Equatable {
+    let destination: NotificationDestination
+    let memoryID: UUID?
+
+    init(destination: NotificationDestination, memoryID: UUID? = nil) {
+        self.destination = destination
+        self.memoryID = memoryID
+    }
+
+    init(userInfo: [AnyHashable: Any]) {
+        let destination = NotificationDestination(userInfo: userInfo)
+        self.init(
+            destination: destination,
+            memoryID: NotificationDestination.memoryID(from: userInfo)
+        )
+    }
+}
+
+enum NotificationDestination: String, CaseIterable {
+    case capture
+    case reviewHome
+    case memoryDetail
+
+    private static let identifierNamespace = "glimm"
+    private static let kindUserInfoKey = "notificationKind"
+    private static let memoryIDUserInfoKey = "memoryID"
+    private static let reviewIdentifierSegment = "review"
+
+    var userInfo: [AnyHashable: Any] {
+        [Self.kindUserInfoKey: rawValue]
+    }
+
+    func userInfo(memoryID: UUID?) -> [AnyHashable: Any] {
+        var payload = userInfo
+        if let memoryID {
+            payload[Self.memoryIDUserInfoKey] = memoryID.uuidString
+        }
+        return payload
+    }
+
+    init(userInfo: [AnyHashable: Any]) {
+        guard
+            let rawKind = userInfo[Self.kindUserInfoKey] as? String,
+            let destination = Self(rawValue: rawKind)
+        else {
+            self = .capture
+            return
+        }
+
+        self = destination
+    }
+
+    func makeIdentifier(id: String = UUID().uuidString) -> String {
+        "\(Self.identifierNamespace).\(rawValue).\(id)"
+    }
+
+    func makeReviewIdentifier(id: String) -> String {
+        makeIdentifier(id: "\(Self.reviewIdentifierSegment)-\(id)")
+    }
+
+    func matches(identifier: String) -> Bool {
+        identifier.hasPrefix("\(Self.identifierNamespace).\(rawValue).")
+    }
+
+    func matchesReviewIdentifier(_ identifier: String) -> Bool {
+        identifier.hasPrefix("\(Self.identifierNamespace).\(rawValue).\(Self.reviewIdentifierSegment)-")
+    }
+
+    static func identifiersToCancel(
+        for destination: NotificationDestination,
+        from identifiers: [String]
+    ) -> [String] {
+        identifiers.filter { identifier in
+            if destination.matches(identifier: identifier) {
+                return true
+            }
+
+            return destination == .capture && isLegacyIdentifier(identifier)
+        }
+    }
+
+    static func reviewIdentifiersToCancel(from identifiers: [String]) -> [String] {
+        identifiers.filter { identifier in
+            NotificationDestination.reviewHome.matchesReviewIdentifier(identifier) ||
+                NotificationDestination.memoryDetail.matchesReviewIdentifier(identifier)
+        }
+    }
+
+    static func hasReviewIdentifier(in identifiers: [String]) -> Bool {
+        !reviewIdentifiersToCancel(from: identifiers).isEmpty
+    }
+
+    static func memoryID(from userInfo: [AnyHashable: Any]) -> UUID? {
+        guard let rawID = userInfo[Self.memoryIDUserInfoKey] as? String else {
+            return nil
+        }
+
+        return UUID(uuidString: rawID)
+    }
+
+    private static func isLegacyIdentifier(_ identifier: String) -> Bool {
+        UUID(uuidString: identifier) != nil
+    }
+}
+
 @MainActor
 class NotificationService {
     static let shared = NotificationService()
@@ -36,19 +141,61 @@ class NotificationService {
     }
 
     func scheduleRandomNotifications(settings: Settings) async {
-        cancelAllNotifications()
+        await cancelNotifications(kind: .capture)
 
         let dates = NotificationScheduleBuilder.scheduleDates(settings: settings, now: Date())
         for time in dates {
-            await scheduleNotification(at: time)
+            await scheduleNotification(at: time, destination: .capture)
         }
     }
 
-    private func scheduleNotification(at date: Date) async {
+    func scheduleReviewNotifications(
+        candidates: [ReviewNotificationCandidate],
+        firstDate: Date = Date().addingTimeInterval(60 * 60),
+        forceRefresh: Bool = false
+    ) async {
+        if !forceRefresh {
+            let hasPendingReviewNotifications = await hasPendingReviewNotifications()
+            if hasPendingReviewNotifications {
+                return
+            }
+        }
+
+        await cancelReviewNotifications()
+
+        let selectedCandidates = Array(candidates.prefix(3))
+        let occupiedCaptureDates = await pendingCaptureNotificationDates()
+        let dates = NotificationScheduleBuilder.reviewScheduleDates(
+            firstDate: firstDate,
+            count: selectedCandidates.count,
+            occupiedDates: occupiedCaptureDates
+        )
+
+        for (candidate, date) in zip(selectedCandidates, dates) {
+            await scheduleNotification(
+                at: date,
+                destination: candidate.destination,
+                title: candidate.title,
+                body: candidate.body,
+                memoryID: candidate.memoryID,
+                identifier: candidate.destination.makeReviewIdentifier(id: candidate.id)
+            )
+        }
+    }
+
+    private func scheduleNotification(
+        at date: Date,
+        destination: NotificationDestination,
+        title: String = "glimm",
+        body: String? = nil,
+        memoryID: UUID? = nil,
+        identifier: String? = nil
+    ) async {
         let content = UNMutableNotificationContent()
-        content.title = "glimm"
-        content.body = messages.randomElement() ?? String(localized: "notification.message1")
+        content.title = title
+        content.body = body ?? messages.randomElement() ?? String(localized: "notification.message1")
         content.sound = .default
+        content.userInfo = destination.userInfo(memoryID: memoryID)
 
         let calendar = Calendar.current
         let components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: date)
@@ -56,7 +203,7 @@ class NotificationService {
         let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
 
         let request = UNNotificationRequest(
-            identifier: UUID().uuidString,
+            identifier: identifier ?? destination.makeIdentifier(),
             content: content,
             trigger: trigger
         )
@@ -72,7 +219,40 @@ class NotificationService {
         center.removeAllPendingNotificationRequests()
     }
 
+    func cancelNotifications(kind: NotificationDestination) async {
+        let pendingIdentifiers = await center.pendingNotificationRequests().map(\.identifier)
+        let identifiers = NotificationDestination.identifiersToCancel(
+            for: kind,
+            from: pendingIdentifiers
+        )
+
+        center.removePendingNotificationRequests(withIdentifiers: identifiers)
+    }
+
+    func cancelReviewNotifications() async {
+        let pendingIdentifiers = await center.pendingNotificationRequests().map(\.identifier)
+        let identifiers = NotificationDestination.reviewIdentifiersToCancel(from: pendingIdentifiers)
+
+        center.removePendingNotificationRequests(withIdentifiers: identifiers)
+    }
+
+    func hasPendingReviewNotifications() async -> Bool {
+        let pendingIdentifiers = await center.pendingNotificationRequests().map(\.identifier)
+        return NotificationDestination.hasReviewIdentifier(in: pendingIdentifiers)
+    }
+
     func getPendingNotifications() async -> [UNNotificationRequest] {
         return await center.pendingNotificationRequests()
+    }
+
+    private func pendingCaptureNotificationDates() async -> [Date] {
+        await center.pendingNotificationRequests().compactMap { request in
+            guard NotificationDestination.capture.matches(identifier: request.identifier),
+                  let trigger = request.trigger as? UNCalendarNotificationTrigger else {
+                return nil
+            }
+
+            return trigger.nextTriggerDate()
+        }
     }
 }
