@@ -156,7 +156,41 @@ final class NotificationScheduleBuilderTests: XCTestCase {
         )
     }
 
+    func testReviewScheduleDatesSkipDaysWithCaptureNotifications() {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+        let firstDate = fixedDate(year: 2026, month: 4, day: 27, hour: 10)
+        let occupiedDates = [
+            fixedDate(year: 2026, month: 4, day: 27, hour: 9),
+            fixedDate(year: 2026, month: 4, day: 29, hour: 18)
+        ]
+
+        let dates = NotificationScheduleBuilder.reviewScheduleDates(
+            firstDate: firstDate,
+            count: 3,
+            occupiedDates: occupiedDates,
+            calendar: calendar
+        )
+
+        XCTAssertEqual(dates, [
+            fixedDate(year: 2026, month: 4, day: 28, hour: 10),
+            fixedDate(year: 2026, month: 4, day: 30, hour: 10),
+            fixedDate(year: 2026, month: 5, day: 1, hour: 10)
+        ])
+    }
+
     private func makeTime(hour: Int, minute: Int) -> Date {
         Calendar.current.date(from: DateComponents(hour: hour, minute: minute)) ?? .now
+    }
+
+    private func fixedDate(year: Int, month: Int, day: Int, hour: Int) -> Date {
+        var components = DateComponents()
+        components.calendar = Calendar(identifier: .gregorian)
+        components.timeZone = TimeZone(secondsFromGMT: 0)
+        components.year = year
+        components.month = month
+        components.day = day
+        components.hour = hour
+        return components.date!
     }
 }

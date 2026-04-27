@@ -163,9 +163,15 @@ class NotificationService {
 
         await cancelReviewNotifications()
 
-        let selectedCandidates = candidates.prefix(3)
-        for (offset, candidate) in selectedCandidates.enumerated() {
-            let date = Calendar.current.date(byAdding: .day, value: offset, to: firstDate) ?? firstDate
+        let selectedCandidates = Array(candidates.prefix(3))
+        let occupiedCaptureDates = await pendingCaptureNotificationDates()
+        let dates = NotificationScheduleBuilder.reviewScheduleDates(
+            firstDate: firstDate,
+            count: selectedCandidates.count,
+            occupiedDates: occupiedCaptureDates
+        )
+
+        for (candidate, date) in zip(selectedCandidates, dates) {
             await scheduleNotification(
                 at: date,
                 destination: candidate.destination,
@@ -237,5 +243,16 @@ class NotificationService {
 
     func getPendingNotifications() async -> [UNNotificationRequest] {
         return await center.pendingNotificationRequests()
+    }
+
+    private func pendingCaptureNotificationDates() async -> [Date] {
+        await center.pendingNotificationRequests().compactMap { request in
+            guard NotificationDestination.capture.matches(identifier: request.identifier),
+                  let trigger = request.trigger as? UNCalendarNotificationTrigger else {
+                return nil
+            }
+
+            return trigger.nextTriggerDate()
+        }
     }
 }

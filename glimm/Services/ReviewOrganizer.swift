@@ -356,9 +356,14 @@ enum ReviewOrganizer {
         let memoryComponents = calendar.dateComponents([.year, .month, .day], from: date)
         let nowComponents = calendar.dateComponents([.year, .month, .day], from: now)
 
+        guard let memoryYear = memoryComponents.year,
+              let nowYear = nowComponents.year else {
+            return false
+        }
+
         return memoryComponents.month == nowComponents.month &&
             memoryComponents.day == nowComponents.day &&
-            memoryComponents.year == (nowComponents.year.map { $0 - 1 })
+            memoryYear < nowYear
     }
 
     private static func hasLocationName(_ memory: Memory) -> Bool {

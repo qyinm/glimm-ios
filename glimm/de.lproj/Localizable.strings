@@ -141,9 +141,6 @@
 "review.tab.map" = "Karte";
 "review.empty.title" = "Noch keine Rückblicke";
 "review.empty.subtitle" = "Halte ein paar Momente fest und glimm erstellt Highlights und Orte für dich.";
-"review.highlights.hero" = "Neuester Highlight";
-"review.highlights.recent" = "Letzte Momente";
-"review.highlights.revisit" = "Wieder ansehen";
 "review.section.hero" = "Neuester Highlight";
 "review.section.onThisDay" = "An diesem Tag";
 "review.section.fallbackMemory" = "Wieder ansehen";

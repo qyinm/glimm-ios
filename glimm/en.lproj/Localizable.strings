@@ -141,9 +141,6 @@
 "review.tab.map" = "Map";
 "review.empty.title" = "No reviews yet";
 "review.empty.subtitle" = "Capture a few moments and glimm will turn them into highlights and places.";
-"review.highlights.hero" = "Latest Highlight";
-"review.highlights.recent" = "Recent Moments";
-"review.highlights.revisit" = "Worth Revisiting";
 "review.section.hero" = "Latest Highlight";
 "review.section.onThisDay" = "On This Day";
 "review.section.fallbackMemory" = "Worth Revisiting";

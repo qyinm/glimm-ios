@@ -141,9 +141,6 @@
 "review.tab.map" = "지도";
 "review.empty.title" = "아직 리뷰할 추억이 없어요";
 "review.empty.subtitle" = "몇 개의 순간을 기록하면 glimm이 하이라이트와 장소별 리뷰를 만들어줍니다.";
-"review.highlights.hero" = "최근 하이라이트";
-"review.highlights.recent" = "최근 순간";
-"review.highlights.revisit" = "다시 보고 싶은 순간";
 "review.section.hero" = "최근 하이라이트";
 "review.section.onThisDay" = "오늘의 기억";
 "review.section.fallbackMemory" = "다시 보기";

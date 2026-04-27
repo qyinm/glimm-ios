@@ -508,6 +508,10 @@ class DualCaptureService: NSObject, ObservableObject {
     }
 
     private func finishUnavailablePhotoConnection() {
+        backCapturedImage = nil
+        frontCapturedImage = nil
+        capturedImage = nil
+
         #if targetEnvironment(simulator)
         capturedImage = Self.simulatorPlaceholderImage()
         isCapturing = false

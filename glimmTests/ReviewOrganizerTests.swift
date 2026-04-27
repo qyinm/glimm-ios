@@ -89,16 +89,33 @@ final class ReviewOrganizerTests: XCTestCase {
         XCTAssertNil(section(.fallbackMemory, in: home))
     }
 
+    func testReviewHomeIncludesSameCalendarDayFromAnyPreviousYear() {
+        let now = fixedDate(year: 2026, month: 4, day: 27)
+        let hero = makeMemory(capturedAt: fixedDate(year: 2026, month: 4, day: 27), note: "hero", locationName: nil)
+        let tooRecent = makeMemory(capturedAt: fixedDate(year: 2026, month: 4, day: 23), note: "recent", locationName: nil)
+        let nearestOlder = makeMemory(capturedAt: fixedDate(year: 2026, month: 4, day: 19), note: "nearest", locationName: nil)
+        let older = makeMemory(capturedAt: fixedDate(year: 2026, month: 4, day: 1), note: "older", locationName: nil)
+        let sameDayTwoYearsAgo = makeMemory(capturedAt: fixedDate(year: 2024, month: 4, day: 27), note: "on this day", locationName: nil)
+
+        let home = ReviewOrganizer.reviewHome(
+            from: [sameDayTwoYearsAgo, older, nearestOlder, tooRecent, hero],
+            now: now,
+            calendar: fixedCalendar
+        )
+
+        XCTAssertEqual(section(.onThisDay, in: home)?.memories.map(\.id), [sameDayTwoYearsAgo.id])
+        XCTAssertNil(section(.fallbackMemory, in: home))
+    }
+
     func testReviewHomeFallsBackToNearestOlderMemoryAfterSevenDays() {
         let now = fixedDate(year: 2026, month: 4, day: 27)
         let hero = makeMemory(capturedAt: fixedDate(year: 2026, month: 4, day: 27), note: "hero", locationName: nil)
         let tooRecent = makeMemory(capturedAt: fixedDate(year: 2026, month: 4, day: 23), note: "recent", locationName: nil)
         let nearestOlder = makeMemory(capturedAt: fixedDate(year: 2026, month: 4, day: 19), note: "nearest", locationName: nil)
         let older = makeMemory(capturedAt: fixedDate(year: 2026, month: 4, day: 1), note: "older", locationName: nil)
-        let sameDayTwoYearsAgo = makeMemory(capturedAt: fixedDate(year: 2024, month: 4, day: 27), note: "too old", locationName: nil)
 
         let home = ReviewOrganizer.reviewHome(
-            from: [sameDayTwoYearsAgo, older, nearestOlder, tooRecent, hero],
+            from: [older, nearestOlder, tooRecent, hero],
             now: now,
             calendar: fixedCalendar
         )

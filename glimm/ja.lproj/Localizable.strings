@@ -141,11 +141,8 @@
 "review.tab.map" = "マップ";
 "review.empty.title" = "まだレビューできる思い出がありません";
 "review.empty.subtitle" = "いくつか瞬間を記録すると、glimmがハイライトと場所別レビューを作成します。";
-"review.highlights.hero" = "最新ハイライト";
-"review.highlights.recent" = "最近の瞬間";
-"review.highlights.revisit" = "もう一度見たい瞬間";
 "review.section.hero" = "最新ハイライト";
-"review.section.onThisDay" = "今日の思い出";
+"review.section.onThisDay" = "この日の思い出";
 "review.section.fallbackMemory" = "もう一度見る";
 "review.section.recentWeek" = "今週";
 "review.section.voiceMemories" = "音声メモ";

@@ -124,6 +124,30 @@ struct NotificationScheduleBuilder {
         }
     }
 
+    static func reviewScheduleDates(
+        firstDate: Date,
+        count: Int,
+        occupiedDates: [Date],
+        calendar: Calendar = .current
+    ) -> [Date] {
+        guard count > 0 else { return [] }
+
+        let occupiedDays = Set(occupiedDates.map { calendar.startOfDay(for: $0) })
+        var dates: [Date] = []
+        var dayOffset = 0
+
+        while dates.count < count {
+            let candidate = calendar.date(byAdding: .day, value: dayOffset, to: firstDate) ?? firstDate
+            let candidateDay = calendar.startOfDay(for: candidate)
+            if !occupiedDays.contains(candidateDay) {
+                dates.append(candidate)
+            }
+            dayOffset += 1
+        }
+
+        return dates
+    }
+
     private static func minutesInDay(from date: Date, calendar: Calendar) -> Int {
         let components = calendar.dateComponents([.hour, .minute], from: date)
         return (components.hour ?? 0) * 60 + (components.minute ?? 0)

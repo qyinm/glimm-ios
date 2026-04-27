@@ -141,11 +141,8 @@
 "review.tab.map" = "Carte";
 "review.empty.title" = "Aucun récapitulatif pour l'instant";
 "review.empty.subtitle" = "Capture quelques instants et glimm créera des highlights et des lieux pour toi.";
-"review.highlights.hero" = "Dernier highlight";
-"review.highlights.recent" = "Moments récents";
-"review.highlights.revisit" = "À revoir";
 "review.section.hero" = "Dernier highlight";
-"review.section.onThisDay" = "Ce jour-là";
+"review.section.onThisDay" = "Souvenirs de ce jour";
 "review.section.fallbackMemory" = "À revoir";
 "review.section.recentWeek" = "Cette semaine";
 "review.section.voiceMemories" = "Notes vocales";
