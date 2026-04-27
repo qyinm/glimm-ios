@@ -144,9 +144,22 @@
 "review.highlights.hero" = "Neuester Highlight";
 "review.highlights.recent" = "Letzte Momente";
 "review.highlights.revisit" = "Wieder ansehen";
+"review.section.hero" = "Neuester Highlight";
+"review.section.onThisDay" = "An diesem Tag";
+"review.section.fallbackMemory" = "Wieder ansehen";
+"review.section.recentWeek" = "Diese Woche";
+"review.section.voiceMemories" = "Sprachnotizen";
+"review.section.locationMemories" = "Nach Ort";
+"review.section.frequentPlaces" = "Häufige Orte";
 "review.places.empty" = "Füge Orts-Tags hinzu, um Erinnerungen nach Orten zu entdecken.";
 "review.places.count %lld" = "%lld Besuche";
 "review.places.lastVisited %@" = "Zuletzt besucht %@";
+"review.notification.memory.title" = "Eine Erinnerung ist bereit";
+"review.notification.memory.body" = "Sieh dir in Ruhe einen gespeicherten Moment wieder an.";
+"review.notification.voice.title" = "Eine Spracherinnerung wartet";
+"review.notification.voice.body" = "Hör noch einmal in etwas hinein, das du früher gespeichert hast.";
+"review.notification.place.title" = "Ein früherer Ort ist bereit";
+"review.notification.place.body" = "Blicke auf Erinnerungen von einem Ort zurück, an dem du warst.";
 
 // MARK: - Capture Review
 "capture.review.title" = "Aufnahme prüfen";

@@ -144,9 +144,22 @@
 "review.highlights.hero" = "Dernier highlight";
 "review.highlights.recent" = "Moments récents";
 "review.highlights.revisit" = "À revoir";
+"review.section.hero" = "Dernier highlight";
+"review.section.onThisDay" = "Ce jour-là";
+"review.section.fallbackMemory" = "À revoir";
+"review.section.recentWeek" = "Cette semaine";
+"review.section.voiceMemories" = "Notes vocales";
+"review.section.locationMemories" = "Par lieu";
+"review.section.frequentPlaces" = "Lieux fréquents";
 "review.places.empty" = "Ajoute des lieux pour explorer tes souvenirs par endroit.";
 "review.places.count %lld" = "%lld visites";
 "review.places.lastVisited %@" = "Dernière visite %@";
+"review.notification.memory.title" = "Un souvenir est prêt à revoir";
+"review.notification.memory.body" = "Reviens tranquillement sur un moment enregistré.";
+"review.notification.voice.title" = "Un souvenir vocal t'attend";
+"review.notification.voice.body" = "Réécoute quelque chose que tu as enregistré plus tôt.";
+"review.notification.place.title" = "Un ancien lieu est prêt à revoir";
+"review.notification.place.body" = "Reviens sur des souvenirs d'un endroit où tu es passé.";
 
 // MARK: - Capture Review
 "capture.review.title" = "Vérifier la capture";

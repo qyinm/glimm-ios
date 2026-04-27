@@ -9,9 +9,12 @@ import SwiftData
 struct MainTabView: View {
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.modelContext) private var modelContext
+    @AppStorage("reviewPromptsEnabled") private var reviewPromptsEnabled = false
+    @Query(sort: \Memory.capturedAt, order: .reverse) private var memories: [Memory]
 
     @State private var selectedTab = 0
     @State private var showCapture = false
+    @State private var selectedNotificationMemory: Memory?
 
     private var settings: Settings {
         Settings.getOrCreate(in: modelContext)
@@ -44,6 +47,9 @@ struct MainTabView: View {
         .fullScreenCover(isPresented: $showCapture) {
             CaptureView()
         }
+        .sheet(item: $selectedNotificationMemory) { memory in
+            MemoryDetailView(memory: memory)
+        }
         .task {
             await initializeNotifications()
         }
@@ -55,23 +61,54 @@ struct MainTabView: View {
             }
         }
         .onAppear {
-            // Check flag for cold launch (app was terminated when notification tapped)
-            if AppDelegate.shouldOpenCamera {
-                AppDelegate.shouldOpenCamera = false
-                showCapture = true
+            // Check destination for cold launch (app was terminated when notification tapped).
+            if let notificationRoute = AppDelegate.pendingLaunchRoute {
+                AppDelegate.pendingLaunchRoute = nil
+                route(to: notificationRoute)
             }
         }
-        .onReceive(NotificationCenter.default.publisher(for: .openCamera)) { _ in
+        .onReceive(NotificationCenter.default.publisher(for: .openNotificationDestination)) { notification in
+            guard let route = notification.object as? NotificationRoute else { return }
+            AppDelegate.pendingLaunchRoute = nil
+            self.route(to: route)
+        }
+    }
+
+    private func route(to route: NotificationRoute) {
+        switch route.destination {
+        case .capture:
             showCapture = true
+        case .reviewHome:
+            selectedTab = 1
+        case .memoryDetail:
+            selectedTab = 1
+            if let memoryID = route.memoryID,
+               let memory = memories.first(where: { $0.id == memoryID }) {
+                selectedNotificationMemory = memory
+            }
         }
     }
 
     private func initializeNotifications() async {
-        guard settings.notifyEnabled else { return }
+        if !reviewPromptsEnabled {
+            await NotificationService.shared.cancelReviewNotifications()
+        }
+
+        guard settings.notifyEnabled || reviewPromptsEnabled else { return }
 
         let granted = await NotificationService.shared.requestPermission()
         if granted {
-            await NotificationService.shared.scheduleRandomNotifications(settings: settings)
+            if settings.notifyEnabled {
+                await NotificationService.shared.scheduleRandomNotifications(settings: settings)
+            }
+
+            if reviewPromptsEnabled {
+                let candidates = ReviewOrganizer.reviewNotificationCandidates(
+                    from: memories,
+                    reviewPromptsEnabled: reviewPromptsEnabled
+                )
+                await NotificationService.shared.scheduleReviewNotifications(candidates: candidates)
+            }
         }
     }
 

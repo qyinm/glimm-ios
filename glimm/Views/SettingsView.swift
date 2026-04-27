@@ -70,7 +70,9 @@ struct SettingsView: View {
                                         await NotificationService.shared.scheduleRandomNotifications(settings: settings)
                                     }
                                 } else {
-                                    NotificationService.shared.cancelAllNotifications()
+                                    Task {
+                                        await NotificationService.shared.cancelNotifications(kind: .capture)
+                                    }
                                 }
                             }
                         ))

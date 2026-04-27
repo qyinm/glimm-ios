@@ -7,8 +7,8 @@ import UIKit
 import UserNotifications
 
 class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
-    /// Flag to open camera when app launches from notification tap
-    @MainActor static var shouldOpenCamera = false
+    /// Route to open when app launches from a notification tap.
+    @MainActor static var pendingLaunchRoute: NotificationRoute?
 
     func application(
         _ application: UIApplication,
@@ -24,11 +24,17 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
-        // Set flag for cold launch (when MainTabView isn't mounted yet)
-        AppDelegate.shouldOpenCamera = true
-        // Post notification for warm launch (when app is already running)
-        NotificationCenter.default.post(name: .openCamera, object: nil)
-        completionHandler()
+        let route = NotificationRoute(
+            userInfo: response.notification.request.content.userInfo
+        )
+
+        Task { @MainActor in
+            // Set route for cold launch (when MainTabView isn't mounted yet).
+            AppDelegate.pendingLaunchRoute = route
+            // Post route for warm launch (when app is already running).
+            NotificationCenter.default.post(name: .openNotificationDestination, object: route)
+            completionHandler()
+        }
     }
 
     // Called when notification arrives while app is in foreground
@@ -42,5 +48,5 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 }
 
 extension Notification.Name {
-    static let openCamera = Notification.Name("openCamera")
+    static let openNotificationDestination = Notification.Name("openNotificationDestination")
 }

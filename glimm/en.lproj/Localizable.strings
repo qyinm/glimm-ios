@@ -144,9 +144,22 @@
 "review.highlights.hero" = "Latest Highlight";
 "review.highlights.recent" = "Recent Moments";
 "review.highlights.revisit" = "Worth Revisiting";
+"review.section.hero" = "Latest Highlight";
+"review.section.onThisDay" = "On This Day";
+"review.section.fallbackMemory" = "Worth Revisiting";
+"review.section.recentWeek" = "This Week";
+"review.section.voiceMemories" = "Voice Notes";
+"review.section.locationMemories" = "By Location";
+"review.section.frequentPlaces" = "Frequent Places";
 "review.places.empty" = "Add location tags to explore memories by place.";
 "review.places.count %lld" = "%lld visits";
 "review.places.lastVisited %@" = "Last visited %@";
+"review.notification.memory.title" = "A memory is ready to revisit";
+"review.notification.memory.body" = "Take a quiet look back at one saved moment.";
+"review.notification.voice.title" = "A voice memory is waiting";
+"review.notification.voice.body" = "Listen back to something you saved earlier.";
+"review.notification.place.title" = "A past place is ready to revisit";
+"review.notification.place.body" = "Look back at memories from somewhere you have been.";
 
 // MARK: - Capture Review
 "capture.review.title" = "Review Capture";
