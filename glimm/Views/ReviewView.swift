@@ -48,8 +48,8 @@ struct ReviewView: View {
                     contentView
                 }
             }
-            .navigationTitle(String(localized: "review.title"))
-            .navigationBarTitleDisplayMode(.large)
+            .navigationTitle("")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {

@@ -42,8 +42,7 @@ struct SettingsView: View {
                 .padding(.vertical, 8)
                 .padding(.bottom, 100) // Space for tab bar
             }
-            .navigationTitle(String(localized: "settings.title"))
-            .navigationBarTitleDisplayMode(.large)
+            .toolbar(.hidden, for: .navigationBar)
             .background(Color(.systemBackground))
         }
     }
