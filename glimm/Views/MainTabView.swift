@@ -7,12 +7,11 @@ import SwiftUI
 import SwiftData
 
 struct MainTabView: View {
-    @Environment(\.scenePhase) private var scenePhase
     @Environment(\.modelContext) private var modelContext
     @AppStorage("reviewPromptsEnabled") private var reviewPromptsEnabled = false
     @Query(sort: \Memory.capturedAt, order: .reverse) private var memories: [Memory]
 
-    @State private var selectedTab = 0
+    @State private var selectedTab = MainTabItem.timeline
     @State private var showCapture = false
     @State private var selectedNotificationMemory: Memory?
 
@@ -29,14 +28,12 @@ struct MainTabView: View {
             // Content
             Group {
                 switch selectedTab {
-                case 0:
+                case .timeline:
                     HomeView()
-                case 1:
+                case .review:
                     ReviewView()
-                case 2:
+                case .settings:
                     SettingsView()
-                default:
-                    HomeView()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -50,75 +47,23 @@ struct MainTabView: View {
         .sheet(item: $selectedNotificationMemory) { memory in
             MemoryDetailView(memory: memory)
         }
-        .task {
-            await initializeNotifications()
-        }
-        .onChange(of: scenePhase) { _, newPhase in
-            if newPhase == .active {
-                Task {
-                    await initializeNotifications()
-                }
-            }
-        }
-        .onAppear {
-            // Check destination for cold launch (app was terminated when notification tapped).
-            if let notificationRoute = AppDelegate.pendingLaunchRoute {
-                AppDelegate.pendingLaunchRoute = nil
-                route(to: notificationRoute)
-            }
-        }
-        .onReceive(NotificationCenter.default.publisher(for: .openNotificationDestination)) { notification in
-            guard let route = notification.object as? NotificationRoute else { return }
-            AppDelegate.pendingLaunchRoute = nil
-            self.route(to: route)
-        }
-    }
-
-    private func route(to route: NotificationRoute) {
-        switch route.destination {
-        case .capture:
-            showCapture = true
-        case .reviewHome:
-            selectedTab = 1
-        case .memoryDetail:
-            selectedTab = 1
-            if let memoryID = route.memoryID,
-               let memory = memories.first(where: { $0.id == memoryID }) {
-                selectedNotificationMemory = memory
-            }
-        }
-    }
-
-    private func initializeNotifications() async {
-        if !reviewPromptsEnabled {
-            await NotificationService.shared.cancelReviewNotifications()
-        }
-
-        guard settings.notifyEnabled || reviewPromptsEnabled else { return }
-
-        let granted = await NotificationService.shared.requestPermission()
-        if granted {
-            if settings.notifyEnabled {
-                await NotificationService.shared.scheduleRandomNotifications(settings: settings)
-            }
-
-            if reviewPromptsEnabled {
-                let candidates = ReviewOrganizer.reviewNotificationCandidates(
-                    from: memories,
-                    reviewPromptsEnabled: reviewPromptsEnabled
-                )
-                await NotificationService.shared.scheduleReviewNotifications(candidates: candidates)
-            }
-        }
+        .mainTabNotificationCoordination(
+            selectedTab: $selectedTab,
+            showCapture: $showCapture,
+            selectedNotificationMemory: $selectedNotificationMemory,
+            settings: settings,
+            reviewPromptsEnabled: reviewPromptsEnabled,
+            memories: memories
+        )
     }
 
     private var customTabBar: some View {
         HStack {
             // Regular tabs in glass container
             HStack(spacing: 0) {
-                tabButton(icon: "square.stack", title: String(localized: "tab.timeline"), tag: 0)
-                tabButton(icon: "sparkles", title: String(localized: "tab.review"), tag: 1)
-                tabButton(icon: "gearshape", title: String(localized: "tab.settings"), tag: 2)
+                tabButton(icon: "square.stack", title: String(localized: "tab.timeline"), tag: .timeline)
+                tabButton(icon: "sparkles", title: String(localized: "tab.review"), tag: .review)
+                tabButton(icon: "gearshape", title: String(localized: "tab.settings"), tag: .settings)
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 10)
@@ -189,7 +134,7 @@ struct MainTabView: View {
         }
     }
 
-    private func tabButton(icon: String, title: String, tag: Int) -> some View {
+    private func tabButton(icon: String, title: String, tag: MainTabItem) -> some View {
         Button {
             withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                 selectedTab = tag
