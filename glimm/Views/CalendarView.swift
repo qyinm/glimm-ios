@@ -99,27 +99,29 @@ struct CalendarView: View {
     }
 
     private func dayCell(for date: Date) -> some View {
-        let hasMemories = memoriesForDate(date).count > 0
+        let dayMemories = memoriesForDate(date)
+        let hasMemories = !dayMemories.isEmpty
         let isToday = calendar.isDateInToday(date)
 
         return Button {
-            let dayMemories = memoriesForDate(date)
-            if !dayMemories.isEmpty {
-                selectedDate = date
-                selectedDayMemories = dayMemories
-            }
+            selectedDate = date
+            selectedDayMemories = dayMemories
         } label: {
             ZStack {
-                if isToday {
+                if isToday && hasMemories {
                     Circle()
                         .fill(colorScheme == .dark ? .white : .black)
+                        .frame(width: 36, height: 36)
+                } else if isToday {
+                    Circle()
+                        .stroke(Color.secondary.opacity(0.35), lineWidth: 1)
                         .frame(width: 36, height: 36)
                 }
 
                 Text("\(calendar.component(.day, from: date))")
                     .font(.body)
-                    .fontWeight(isToday ? .semibold : .regular)
-                    .foregroundStyle(isToday ? (colorScheme == .dark ? .black : .white) : .primary)
+                    .fontWeight(isToday || hasMemories ? .semibold : .regular)
+                    .foregroundStyle(dayTextColor(isToday: isToday, hasMemories: hasMemories))
 
                 if hasMemories && !isToday {
                     Circle()
@@ -131,6 +133,15 @@ struct CalendarView: View {
             .frame(height: 44)
         }
         .buttonStyle(.plain)
+        .disabled(!hasMemories)
+    }
+
+    private func dayTextColor(isToday: Bool, hasMemories: Bool) -> Color {
+        if isToday && hasMemories {
+            return colorScheme == .dark ? .black : .white
+        }
+
+        return hasMemories ? .primary : .secondary.opacity(0.45)
     }
 
     private var daysInMonth: [Date?] {
