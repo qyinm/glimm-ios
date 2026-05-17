@@ -1,6 +1,8 @@
 // MARK: - Home
 "home.empty.title" = "Noch keine Erinnerungen";
 "home.empty.subtitle" = "Tippe auf +, um deinen\nersten Moment festzuhalten";
+"timeline.today.empty.title" = "Heute noch keine Erinnerungen";
+"timeline.today.empty.subtitle" = "Halte einen Moment fest, um die heutige Zeitleiste zu starten";
 
 // MARK: - Calendar
 "calendar.title" = "Kalender";

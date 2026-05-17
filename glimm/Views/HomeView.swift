@@ -10,20 +10,53 @@ struct HomeView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Memory.capturedAt, order: .reverse) private var memories: [Memory]
     @State private var selectedMemory: Memory?
+    @State private var showCalendar = false
+
+    private var todaysMemories: [Memory] {
+        let calendar = Calendar.current
+        return memories.filter { memory in
+            calendar.isDateInToday(memory.capturedAt)
+        }
+    }
+
+    private var emptyTitle: String {
+        memories.isEmpty
+            ? String(localized: "home.empty.title")
+            : String(localized: "timeline.today.empty.title")
+    }
+
+    private var emptySubtitle: String {
+        memories.isEmpty
+            ? String(localized: "home.empty.subtitle")
+            : String(localized: "timeline.today.empty.subtitle")
+    }
 
     var body: some View {
         NavigationStack {
             Group {
-                if memories.isEmpty {
+                if todaysMemories.isEmpty {
                     emptyStateView
                 } else {
                     memoryListView
                 }
             }
-            .toolbar(.hidden, for: .navigationBar)
+            .navigationTitle("")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        showCalendar = true
+                    } label: {
+                        Image(systemName: "calendar")
+                    }
+                }
+            }
             .background(Color(.systemBackground))
             .sheet(item: $selectedMemory) { memory in
                 MemoryDetailView(memory: memory)
+            }
+            .sheet(isPresented: $showCalendar) {
+                CalendarView()
             }
         }
     }
@@ -34,11 +67,11 @@ struct HomeView: View {
                 .font(.system(size: 48))
                 .foregroundStyle(.tertiary)
 
-            Text(String(localized: "home.empty.title"))
+            Text(emptyTitle)
                 .font(.title2)
                 .fontWeight(.semibold)
 
-            Text(String(localized: "home.empty.subtitle"))
+            Text(emptySubtitle)
                 .font(.body)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -84,7 +117,7 @@ struct HomeView: View {
 
     private var groupedMemories: [(key: Date, value: [Memory])] {
         let calendar = Calendar.current
-        let grouped = Dictionary(grouping: memories) { memory in
+        let grouped = Dictionary(grouping: todaysMemories) { memory in
             calendar.startOfDay(for: memory.capturedAt)
         }
         return grouped.sorted { $0.key > $1.key }

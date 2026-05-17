@@ -1,6 +1,8 @@
 // MARK: - Home
 "home.empty.title" = "아직 추억이 없어요";
 "home.empty.subtitle" = "+ 버튼을 눌러\n첫 순간을 기록하세요";
+"timeline.today.empty.title" = "오늘의 추억이 없어요";
+"timeline.today.empty.subtitle" = "오늘의 타임라인을 시작하려면 순간을 기록하세요";
 
 // MARK: - Calendar
 "calendar.title" = "캘린더";

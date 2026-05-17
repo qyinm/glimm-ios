@@ -1,6 +1,8 @@
 // MARK: - Home
 "home.empty.title" = "Aucun souvenir pour le moment";
 "home.empty.subtitle" = "Appuie sur le bouton + pour capturer\nton premier instant";
+"timeline.today.empty.title" = "Aucun souvenir aujourd'hui";
+"timeline.today.empty.subtitle" = "Capture un moment pour commencer le journal du jour";
 
 // MARK: - Calendar
 "calendar.title" = "Calendrier";
