@@ -58,20 +58,6 @@ struct CaptureView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 20))
                     }
 
-                    Button {
-                        saveMemory()
-                    } label: {
-                        Text(String(localized: "capture.review.saveNow"))
-                            .fontWeight(.semibold)
-                            .foregroundStyle(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 16)
-                            .background(Color.primary)
-                            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                    }
-                    .disabled(!canSaveMemory)
-                    .opacity(canSaveMemory ? 1 : 0.5)
-
                     optionalSection(
                         title: String(localized: "capture.note.title"),
                         subtitle: note.isEmpty

@@ -11,7 +11,8 @@ struct CalendarView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Memory.capturedAt, order: .reverse) private var memories: [Memory]
     @State private var selectedDate = Date()
-    @State private var selectedDayMemories: [Memory]?
+
+    let onDateSelected: (Date) -> Void
 
     private let calendar = Calendar.current
     private let columns = Array(repeating: GridItem(.flexible()), count: 7)
@@ -32,12 +33,6 @@ struct CalendarView: View {
             .navigationTitle(String(localized: "calendar.title"))
             .navigationBarTitleDisplayMode(.large)
             .background(Color(.systemBackground))
-            .sheet(item: Binding(
-                get: { selectedDayMemories.map { DayMemoriesWrapper(memories: $0, date: selectedDate) } },
-                set: { selectedDayMemories = $0?.memories }
-            )) { wrapper in
-                DayMemoriesSheet(memories: wrapper.memories, date: wrapper.date)
-            }
         }
     }
 
@@ -105,7 +100,7 @@ struct CalendarView: View {
 
         return Button {
             selectedDate = date
-            selectedDayMemories = dayMemories
+            onDateSelected(date)
         } label: {
             ZStack {
                 if isToday && hasMemories {
@@ -180,45 +175,7 @@ struct CalendarView: View {
     }
 }
 
-// MARK: - Helper Types
-
-struct DayMemoriesWrapper: Identifiable {
-    let id = UUID()
-    let memories: [Memory]
-    let date: Date
-}
-
-struct DayMemoriesSheet: View {
-    let memories: [Memory]
-    let date: Date
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        NavigationStack {
-            ScrollView {
-                LazyVStack(spacing: 16) {
-                    ForEach(memories) { memory in
-                        MemoryCard(memory: memory)
-                    }
-                }
-                .padding(16)
-            }
-            .background(Color(.systemBackground))
-            .navigationTitle(date.formatted(.dateTime.month().day()))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(String(localized: "calendar.done")) {
-                        dismiss()
-                    }
-                }
-            }
-        }
-        .presentationDetents([.medium, .large])
-    }
-}
-
 #Preview {
-    CalendarView()
+    CalendarView { _ in }
         .modelContainer(for: Memory.self, inMemory: true)
 }

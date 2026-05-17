@@ -11,11 +11,12 @@ struct HomeView: View {
     @Query(sort: \Memory.capturedAt, order: .reverse) private var memories: [Memory]
     @State private var selectedMemory: Memory?
     @State private var showCalendar = false
+    @State private var selectedDate = Date()
 
-    private var todaysMemories: [Memory] {
+    private var selectedDateMemories: [Memory] {
         let calendar = Calendar.current
         return memories.filter { memory in
-            calendar.isDateInToday(memory.capturedAt)
+            calendar.isDate(memory.capturedAt, inSameDayAs: selectedDate)
         }
     }
 
@@ -34,7 +35,7 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             Group {
-                if todaysMemories.isEmpty {
+                if selectedDateMemories.isEmpty {
                     emptyStateView
                 } else {
                     memoryListView
@@ -56,7 +57,10 @@ struct HomeView: View {
                 MemoryDetailView(memory: memory)
             }
             .sheet(isPresented: $showCalendar) {
-                CalendarView()
+                CalendarView { date in
+                    selectedDate = date
+                    showCalendar = false
+                }
             }
         }
     }
@@ -117,7 +121,7 @@ struct HomeView: View {
 
     private var groupedMemories: [(key: Date, value: [Memory])] {
         let calendar = Calendar.current
-        let grouped = Dictionary(grouping: todaysMemories) { memory in
+        let grouped = Dictionary(grouping: selectedDateMemories) { memory in
             calendar.startOfDay(for: memory.capturedAt)
         }
         return grouped.sorted { $0.key > $1.key }

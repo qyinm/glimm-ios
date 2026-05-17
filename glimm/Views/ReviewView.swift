@@ -24,13 +24,25 @@ struct ReviewView: View {
     @State private var selectedMemory: Memory?
     @State private var selectedPlace: PlaceMemoryGroup?
     @State private var showCalendar = false
+    @State private var selectedDate: Date?
+
+    private var displayMemories: [Memory] {
+        guard let selectedDate else {
+            return memories
+        }
+
+        let calendar = Calendar.current
+        return memories.filter { memory in
+            calendar.isDate(memory.capturedAt, inSameDayAs: selectedDate)
+        }
+    }
 
     private var reviewHome: ReviewHome {
-        ReviewOrganizer.reviewHome(from: memories)
+        ReviewOrganizer.reviewHome(from: displayMemories)
     }
 
     private var placeGroups: [PlaceMemoryGroup] {
-        ReviewOrganizer.placeGroups(from: memories)
+        ReviewOrganizer.placeGroups(from: displayMemories)
     }
 
     private var highlightSections: [ReviewSection] {
@@ -70,7 +82,10 @@ struct ReviewView: View {
                 PlaceReviewDetailView(place: place)
             }
             .sheet(isPresented: $showCalendar) {
-                CalendarView()
+                CalendarView { date in
+                    selectedDate = date
+                    showCalendar = false
+                }
             }
         }
     }
@@ -85,6 +100,10 @@ struct ReviewView: View {
             .pickerStyle(.segmented)
             .padding(.horizontal, 16)
             .padding(.top, 8)
+
+            if let selectedDate {
+                selectedDateHeader(for: selectedDate)
+            }
 
             switch selectedTab {
             case .highlights:
@@ -211,6 +230,19 @@ struct ReviewView: View {
             .font(.headline)
             .foregroundStyle(.primary)
             .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func selectedDateHeader(for date: Date) -> some View {
+        HStack {
+            Text(date, format: .dateTime.month().day().weekday(.wide))
+                .font(.caption)
+                .fontWeight(.medium)
+                .foregroundStyle(.secondary)
+                .textCase(.uppercase)
+
+            Spacer()
+        }
+        .padding(.horizontal, 16)
     }
 }
 
